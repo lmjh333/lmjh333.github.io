@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>太极解卦 · 八卦解卦，预断吉凶</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNTYiIGhlaWdodD0iMjU2IiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+CiAgPGNpcmNsZSBjeD0iMTI4IiBjeT0iMTI4IiByPSIxMTgiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZT0iIzNjM2MzYyIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPHBhdGggZD0iTTEyOCAxMCBBMTE4IDExOCAwIDAgMSAxMjggMjQ2IFoiIGZpbGw9IiMwMDAwMDAiLz4KICA8Y2lyY2xlIGN4PSIxMjgiIGN5PSI2OSIgcj0iNTkiIGZpbGw9IiNmZmZmZmYiLz4KICA8Y2lyY2xlIGN4PSIxMjgiIGN5PSIxODciIHI9IjU5IiBmaWxsPSIjMDAwMDAwIi8+CiAgPGNpcmNsZSBjeD0iMTI4IiBjeT0iNjkiIHI9IjE5IiBmaWxsPSIjMDAwMDAwIi8+CiAgPGNpcmNsZSBjeD0iMTI4IiBjeT0iMTg3IiByPSIxOSIgZmlsbD0iI2ZmZmZmZiIvPgo8L3N2Zz4=">
+<style>
+/* 太极解卦 · 中国风样式 */
+:root {
+    --paper: #f5ebdd;
+    --paper2: #fdf6ea;
+    --ink: #2b2118;
+    --brown: #8a6d5b;
+    --gold: #b8860b;
+    --cinnabar: #b03a2e;
+    --cinnabar-deep: #a6192e;
+    --line: #e0c9a6;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "KaiTi", "STKaiti", "Microsoft YaHei", "SimSun", serif;
+    min-height: 100vh;
+}
+
+header {
+    text-align: center;
+    padding: 26px 16px 10px;
+}
+.title {
+    font-size: 34px;
+    letter-spacing: 6px;
+    color: var(--cinnabar-deep);
+    font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0,0,0,.08);
+}
+.subtitle {
+    margin-top: 6px;
+    font-size: 15px;
+    color: var(--brown);
+    letter-spacing: 4px;
+}
+
+main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 10px 16px 30px;
+}
+
+.card {
+    background: var(--paper2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 8px rgba(90, 60, 30, .08);
+}
+
+label { font-size: 15px; color: var(--brown); display: block; margin-bottom: 6px; }
+
+#question {
+    width: 100%;
+    font-size: 16px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fffdf7;
+    font-family: inherit;
+    color: var(--ink);
+    outline: none;
+}
+#question:focus { border-color: var(--cinnabar); }
+
+.location-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    font-size: 13px;
+}
+.location-row label {
+    font-size: 13px;
+    color: var(--brown);
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+.location-row select {
+    font-size: 13px;
+    padding: 4px 6px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: #fffdf7;
+    font-family: inherit;
+    color: var(--ink);
+}
+#provinceSelect { max-width: 100px; }
+#citySelect { max-width: 120px; }
+.location-tip {
+    font-size: 11px;
+    color: var(--brown);
+}
+
+.method { margin-top: 12px; display: flex; gap: 20px; flex-wrap: wrap; }
+.method label { color: var(--ink); font-size: 15px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin: 0; }
+.method input { accent-color: var(--cinnabar); width: 16px; height: 16px; }
+
+.method-sub {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: #fdf6ea;
+    border: 1px dashed var(--line);
+    border-radius: 6px;
+}
+.method-sub label { color: var(--ink); font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; margin: 0 12px 0 0; }
+.method-sub input { accent-color: var(--cinnabar); width: 14px; height: 14px; }
+#divineNum {
+    width: 100%;
+    max-width: 460px;
+    height: auto;
+    font-size: 17px;
+    letter-spacing: 3px;
+    padding: 9px 12px;
+    margin-top: 6px;
+    border: 1px solid var(--line, #d8cdb8);
+    border-radius: 8px;
+    box-sizing: border-box;
+    background: #fffdf8;
+    color: var(--ink, #2b2118);
+}
+
+.coin-input-wrap {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+}
+.coin-input-hint { font-size: 13px; color: var(--brown); margin-right: 4px; }
+.coin-input-group { display: flex; flex-wrap: wrap; gap: 6px; }
+.coin-input-group label {
+    font-size: 12px;
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    margin: 0;
+}
+.coin-input-group input {
+    width: 44px;
+    padding: 3px 4px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font-size: 13px;
+    text-align: center;
+    background: #fffdf7;
+    font-family: inherit;
+}
+.coin-input-group input:focus { border-color: var(--cinnabar); outline: none; }
+.coin-input-tip { font-size: 11px; color: var(--brown); width: 100%; margin-top: 4px; }
+
+.meihua-num-wrap {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+.meihua-num-wrap label {
+    font-size: 13px;
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0;
+}
+.meihua-num-wrap input {
+    width: 70px;
+    padding: 4px 6px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font-size: 13px;
+    text-align: center;
+    background: #fffdf7;
+    font-family: inherit;
+}
+.meihua-num-wrap input:focus { border-color: var(--cinnabar); outline: none; }
+
+.taiji-wrap { text-align: center; padding: 10px 0 4px; }
+#taiji {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: transform .3s ease, box-shadow .3s ease, filter .3s;
+    filter: drop-shadow(0 4px 12px rgba(90,60,30,.25));
+}
+#taiji:hover { transform: scale(1.06); filter: drop-shadow(0 6px 18px rgba(176,58,46,.4)); }
+#taiji:active { transform: scale(.96); }
+.taiji-hint { color: var(--brown); font-size: 13px; margin-top: 8px; letter-spacing: 2px; }
+
+#status { min-height: 22px; margin-top: 10px; color: var(--cinnabar); font-size: 15px; letter-spacing: 1px; }
+
+.coins { display: flex; justify-content: center; gap: 22px; margin-top: 14px; }
+.coin {
+    width: 54px; height: 54px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #e8cf96, #c8a96a 60%, #8a6d2b);
+    border: 2px solid #8a6d2b;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: bold; color: #5a4308;
+    font-family: "KaiTi", serif;
+    animation: flip .45s ease-in-out;
+}
+@keyframes flip { 0% { transform: rotateY(0); } 100% { transform: rotateY(360deg); } }
+
+.hidden { display: none !important; }
+
+.guas { display: flex; gap: 14px; flex-wrap: wrap; }
+.gua {
+    flex: 1;
+    min-width: 200px;
+    background: #fbf3e4;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+}
+.gua-title { color: var(--brown); font-size: 14px; letter-spacing: 3px; }
+.gua-name { font-size: 24px; margin: 6px 0; color: var(--ink); font-weight: bold; }
+.gua-fortune { font-size: 16px; margin-top: 8px; }
+.gua-fortune.big { color: var(--cinnabar-deep); }
+.gua-fortune.good { color: var(--cinnabar); }
+.gua-fortune.mid { color: var(--gold); }
+.gua-fortune.bad { color: #5d6d7e; }
+.gua-fortune.worst { color: #2c3e50; }
+
+.lines { margin: 8px auto; width: 150px; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.line { width: 120px; height: 9px; background: var(--ink); border-radius: 3px; position: relative; }
+.line.yin { background: transparent; display: flex; justify-content: space-between; }
+.line.yin::before, .line.yin::after { content: ""; width: 48px; height: 9px; background: var(--ink); border-radius: 3px; }
+.line .mark { position: absolute; right: -26px; top: -4px; font-size: 17px; color: var(--cinnabar-deep); }
+
+.detail { margin-top: 14px; }
+.row { padding: 7px 0; border-bottom: 1px dashed var(--line); line-height: 1.75; font-size: 15px; }
+.row:last-child { border-bottom: none; }
+.row .k {
+    display: inline-block;
+    min-width: 72px;
+    color: var(--cinnabar);
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 15px;
+    color: var(--cinnabar);
+    margin: 16px 0 8px;
+    letter-spacing: 3px;
+    font-weight: bold;
+}
+
+.row-baihua {
+    background: #f0f7f0;
+    border-left: 3px solid #4caf50;
+    padding: 8px 12px;
+    margin: 4px 0;
+    border-radius: 0 4px 4px 0;
+    font-size: 13px;
+    color: #555;
+}
+
+#tiyong {
+    white-space: pre-line;
+    line-height: 1.6;
+}
+
+#tiyongDetail {
+    white-space: pre-line;
+    line-height: 1.6;
+}
+
+#tiyongOutcome {
+    white-space: pre-line;
+    line-height: 1.6;
+    color: #6a1b9a;
+}
+
+#yaobian {
+    white-space: pre-line;
+    line-height: 1.6;
+}
+
+.conclusion-row {
+    padding: 12px 14px;
+    margin: 8px 0;
+    background: #FFF8E1;
+    border-left: 4px solid var(--cinnabar);
+    border-radius: 0 6px 6px 0;
+    font-size: 15px;
+    font-weight: bold;
+    color: var(--cinnabar-deep);
+    line-height: 1.7;
+}
+.conclusion-row.bian-conclusion {
+    background: #FFF3E0;
+    border-left-color: var(--gold);
+    color: #5A4308;
+    font-size: 13px;
+    font-weight: normal;
+}
+
+.meta { margin-top: 12px; color: var(--brown); font-size: 13px; line-height: 1.7; }
+
+.history { margin-top: 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.history label { margin: 0; }
+.history select {
+    flex: 1;
+    min-width: 220px;
+    padding: 7px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fffdf7;
+    font-family: inherit;
+    font-size: 14px;
+}
+.history button {
+    padding: 8px 16px;
+    background: var(--cinnabar);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    letter-spacing: 2px;
+}
+.history button:hover { background: var(--cinnabar-deep); }
+
+footer {
+    text-align: center;
+    color: #b0a090;
+    font-size: 12px;
+    padding: 16px;
+}
+
+.number-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.number-grid button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 0;
+    border: 1px solid var(--line, #d8cdb8);
+    border-radius: 8px;
+    background: #fbf6ea;
+    color: #4a3b28;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: bold;
+    transition: all .15s ease;
+}
+
+.number-grid button .gua {
+    font-size: 11px;
+    font-weight: normal;
+    color: #9a8a6e;
+    margin-top: 2px;
+}
+
+.number-grid button:hover {
+    border-color: var(--cinnabar, #b3402f);
+    background: #fff;
+}
+
+.number-grid button.active {
+    background: var(--cinnabar, #b3402f);
+    border-color: var(--cinnabar, #b3402f);
+    color: #fff;
+}
+
+.number-grid button.active .gua {
+    color: #ffe7dd;
+}
+
+.num-grid-tip {
+    font-size: 13px;
+    color: #9a8a6e;
+    margin-bottom: 4px;
+}
+
+.poker-cards {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.poker-card {
+    width: 52px;
+    height: 72px;
+    border: 1px solid #c9b89a;
+    border-radius: 6px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,.12);
+    position: relative;
+}
+
+.poker-card.red { color: #c0392b; }
+.poker-card.black { color: #2c3e50; }
+
+.poker-card .suit {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.poker-card .value {
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+.poker-card .line {
+    font-size: 10px;
+    color: #8a7a5e;
+    font-weight: normal;
+    margin-top: 2px;
+}
+
+.poker-card .line.moving {
+    color: var(--cinnabar, #b3402f);
+    font-weight: bold;
+}
+
+.poker-card .yao {
+    font-size: 11px;
+    margin-top: 2px;
+}
+
+.poker-card .yao.yang { color: #b3402f; }
+.poker-card .yao.yin { color: #2c3e50; }
+
+@media (max-width: 520px) {
+    .title { font-size: 26px; }
+    #taiji { width: 160px; height: 160px; }
+    .coin-input-group { gap: 4px; }
+    .coin-input-group input { width: 38px; }
+    .number-grid { grid-template-columns: repeat(6, 1fr); gap: 6px; }
+    .number-grid button { font-size: 15px; padding: 6px 0; }
+}
+
+</style>
+</head>
+<body>
+<header>
+    <div class="title">☯ 太极解卦</div>
+    <div class="subtitle">八卦解卦 · 预断吉凶</div>
+</header>
+
+<main>
+    <section class="card">
+        <label for="question">所问之事</label>
+        <input id="question" type="text" maxlength="60"
+               placeholder="请输入心中所问之事，如：近日工作是否顺利？">
+        <div class="location-row">
+            <label>起卦地点</label>
+            <select id="provinceSelect"></select>
+            <select id="citySelect"></select>
+            <span class="location-tip" id="locationTip"></span>
+        </div>
+        <div class="method">
+            <label><input type="radio" name="method" value="coin" checked> 掷铜钱六爻</label>
+            <label><input type="radio" name="method" value="meihua"> 梅花易数</label>
+        </div>
+        <div id="coinSub" class="method-sub">
+            <label><input type="radio" name="coinMode" value="anim" checked> 动画掷币</label>
+            <label><input type="radio" name="coinMode" value="input"> 离线输入</label>
+            <div id="coinInputWrap" class="coin-input-wrap hidden">
+                <span class="coin-input-hint">每爻直接输入结果数字（三枚之和，背=3 / 面=2）：</span>
+                <span class="coin-input-group">
+                    <label>初爻·最下 <input id="c1" type="number" min="6" max="9" value="7"></label>
+                    <label>二爻 <input id="c2" type="number" min="6" max="9" value="7"></label>
+                    <label>三爻 <input id="c3" type="number" min="6" max="9" value="7"></label>
+                    <label>四爻 <input id="c4" type="number" min="6" max="9" value="7"></label>
+                    <label>五爻 <input id="c5" type="number" min="6" max="9" value="7"></label>
+                    <label>上爻·最上 <input id="c6" type="number" min="6" max="9" value="7"></label>
+                </span>
+                <span class="coin-input-tip">9=老阳○(动)　7=少阳—(静)　8=少阴‑‑(静)　6=老阴×(动)；老阳变阴、老阴变阳，少阳少阴不变。第1次=初爻(最下)…第6次=上爻(最上)。动爻断法：1动看动爻，2动同看（老阳重于老阴），3动参互卦，4-5动以变卦为主，6动看用九/用六。</span>
+            </div>
+        </div>
+        <div id="meihuaSub" class="method-sub hidden">
+            <label><input type="radio" name="meihuaMode" value="time" checked> 时间起卦</label>
+            <label><input type="radio" name="meihuaMode" value="number"> 数字起卦</label>
+            <label><input type="radio" name="meihuaMode" value="poker"> 扑克牌起卦</label>
+            <div id="meihuaNumWrap" class="meihua-num-wrap hidden">
+                <label>数字串（1-18位）<input id="divineNum" type="text" maxlength="18" placeholder="如 258136" value=""></label>
+                <span class="coin-input-tip">输入1-18位阿拉伯数字，逐位相加起卦（只输1位则下卦取当前时辰）</span>
+            </div>
+            <div id="meihuaPokerWrap" class="meihua-num-wrap hidden">
+                <span class="coin-input-tip">点击太极图，自动抽取扑克牌起卦</span>
+                
+                <!-- 模式与牌数选择 -->
+                <div style="margin: 10px 0; padding: 8px; background: #f5f0e6; border-radius: 6px;">
+                    <label><input type="radio" name="pokerMode" value="anim" checked> 动画起牌</label>
+                    <label><input type="radio" name="pokerMode" value="input"> 离线输入</label>
+                    <div id="pokerCountWrap" class="hidden" style="margin-top: 6px;">
+                        <label><input type="radio" name="pokerCount" value="1"> 1张(含时辰)</label>
+                        <label><input type="radio" name="pokerCount" value="2" checked> 2张</label>
+                        <label><input type="radio" name="pokerCount" value="3"> 3张</label>
+                    </div>
+                </div>
+                
+                <div id="pokerCards" class="poker-cards"></div>
+                
+                <!-- 离线输入区域 (1张模式专用) -->
+                <div id="pokerInputWrap" class="poker-input-wrap hidden">
+                    <span>手动输入牌面点数 (A=1, 2-10, J=11, Q=12, K=13)，多张用空格隔开</span>
+                    <input id="pokerInput" type="text" maxlength="20" placeholder="如 A 5 K" value="">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="taiji-wrap">
+        <div id="taiji" title="点击起卦"></div>
+        <div class="taiji-hint">点击太极图起卦</div>
+        <div id="status"></div>
+        <div id="coins" class="coins hidden"></div>
+    </section>
+
+    <section id="result" class="card hidden">
+        <div class="guas">
+            <div class="gua">
+                <div class="gua-title">— 本卦 —</div>
+                <div class="gua-name" id="benName"></div>
+                <div id="benLines" class="lines"></div>
+                <div class="gua-fortune" id="benFortune"></div>
+            </div>
+            <div class="gua">
+                <div class="gua-title">— 变卦 —</div>
+                <div class="gua-name" id="bianName"></div>
+                <div id="bianLines" class="lines"></div>
+                <div class="gua-fortune" id="bianFortune"></div>
+            </div>
+        </div>
+        <div class="detail">
+            <div class="row" id="logicRow"><span class="k">起卦逻辑</span><span id="logic"></span></div>
+            <div class="row" id="huRow"><span class="k">互卦</span><span id="hu"></span></div>
+            <div class="section-title hidden" id="tiyongTitle">— 体用分析 —</div>
+            <div class="row hidden" id="tiyongRow"><span class="k">体用生克</span><span id="tiyong"></span></div>
+            <div class="row hidden" id="tiyongDetailRow"><span class="k">详细分析</span><span id="tiyongDetail"></span></div>
+            <div class="row hidden" id="tiyongOutcomeRow"><span class="k">结局走向</span><span id="tiyongOutcome"></span></div>
+            <div class="row hidden" id="yaobianRow"><span class="k">爻变判断</span><span id="yaobian"></span></div>
+            <div class="section-title">— 本卦解读 —</div>
+            <div class="row"><span class="k">卦辞</span><span id="judgment"></span></div>
+            <div class="row row-baihua"><span class="k">白话</span><span id="judgmentBaihua"></span></div>
+            <div class="row"><span class="k">释义</span><span id="meaning"></span></div>
+            <div class="row"><span class="k">断语</span><span id="advice"></span></div>
+            <div id="conclusionRow" class="conclusion-row hidden"><span id="conclusion"></span></div>
+            <div class="row hidden" id="moveRow"><span class="k">动爻</span><span id="moving"></span></div>
+            <div class="section-title hidden" id="bianTitle">— 变卦解读 —</div>
+            <div class="row hidden" id="bianRow"><span class="k">变卦卦辞</span><span id="bianJudge"></span></div>
+            <div class="row row-baihua hidden" id="bianBaihuaRow"><span class="k">白话</span><span id="bianBaihua"></span></div>
+            <div class="row hidden" id="bianMeaningRow"><span class="k">变卦释义</span><span id="bianMeaning"></span></div>
+            <div id="bianConclusionRow" class="conclusion-row bian-conclusion hidden"><span id="bianConclusion"></span></div>
+        </div>
+        <div class="meta" id="meta"></div>
+        <div class="history">
+            <label for="history">历史记录</label>
+            <select id="history"></select>
+            <button onclick="showHistory()">回看</button>
+        </div>
+    </section>
+</main>
+
+<footer>卦辞内容依据《周易》整理，仅供参考与娱乐。　【页面版本 v20260826b】</footer>
+<script>
+// generated by gen-data.js.ps1 from data\hexagrams.json
+window.HEXAGRAMS = [
+{"n":1,"name":"乾为天","up":"乾","low":"乾","lines":[7,7,7,7,7,7],"f":"大吉","j":"元亨，利贞。","m":"乾象征天，纯阳至健，有创始、亨通、祥和、正固四德。此卦气象盛大，主大局向好，宜积极进取、自强不息。","a":"事业：正是开创之时，前景光明，宜大展宏图，但须守正勿骄；感情：阳气充沛，关系向上，宜坦诚沟通、主动经营；财运：财气旺盛，正财可期，把握时机；健康：精力充沛，注意劳逸结合。","c":"【结论】此事大吉大利，必然成功。天道酬勤，正是大展宏图之时，宜果断行动，把握良机，必有所成。","lt":["初九：潜龙勿用。","九二：见龙在田，利见大人。","九三：君子终日乾乾，夕惕若厉，无咎。","九四：或跃在渊，无咎。","九五：飞龙在天，利见大人。","上九：亢龙有悔。"]},
+{"n":2,"name":"坤为地","up":"坤","low":"坤","lines":[8,8,8,8,8,8],"f":"大吉","j":"元亨，利牝马之贞。君子有攸往，先迷后得主，利西南得朋，东北丧朋。安贞吉。","m":"坤象征地，纯阴至顺，厚德载物。此卦主柔顺包容、以静制动，宜顺势而为，不宜强求争先。","a":"事业：宜守成辅佐，循序渐进，广结善缘；感情：柔顺包容为要，宜温存体贴；财运：宜稳健理财，不宜投机；健康：注意调养，顺应自然。","c":"【结论】此事可成，但不宜主动争先。顺天应人、厚积薄发，则水到渠成；若强行冒进，反易迷失。","lt":["初六：履霜，坚冰至。","六二：直方大，不习无不利。","六三：含章可贞，或从王事，无成有终。","六四：括囊，无咎无誉。","六五：黄裳，元吉。","上六：龙战于野，其血玄黄。"]},
+{"n":3,"name":"水雷屯","up":"坎","low":"震","lines":[7,8,8,8,7,8],"f":"中平","j":"元亨，利贞。勿用有攸往，利建侯。","m":"屯为万物初生、艰难之象，如草木破土。创业起步多有阻滞，宜稳扎稳打，广纳人才，不宜冒进。","a":"事业：起步维艰，宜借助外力、团结协作，切忌急于求成；感情：初见乍起，需耐心培养，勿轻言放弃；财运：早期投入为主，回报在后；健康：小病需防，注意休养。","c":"【结论】此事眼下艰难，尚在萌芽阶段。虽有阻碍，但终可成事，唯需耐心守候，不可急躁。","lt":["初九：磐桓，利居贞，利建侯。","六二：屯如邅如，乘马班如。匪寇婚媾，女子贞不字，十年乃字。","六三：即鹿无虞，惟入于林中，君子几不如舍，往吝。","六四：乘马班如，求婚媾，往吉，无不利。","九五：屯其膏，小贞吉，大贞凶。","上六：乘马班如，泣血涟如。"]},
+{"n":4,"name":"山水蒙","up":"艮","low":"坎","lines":[8,7,8,8,8,7],"f":"中平","j":"亨。匪我求童蒙，童蒙求我。初筮告，再三渎，渎则不告。利贞。","m":"蒙为蒙昧初开之象，主学习、启蒙、解惑。此卦宜虚心求教，以诚感人，戒自恃聪明。","a":"事业：正处学习积累期，宜拜师求教，勿自作聪明；感情：朦胧初识，宜真诚了解；财运：不宜冒进，先明理后行动；健康：注意启蒙自省，防认知偏差。","c":"【结论】此事尚不明朗，需先理清头绪。宜虚心求教、深入学习后再做决定，急于行动反易犯错。","lt":["初六：发蒙，利用刑人，用说桎梏，以往吝。","九二：包蒙吉，纳妇吉，子克家。","六三：勿用取女，见金夫，不有躬，无攸利。","六四：困蒙，吝。","六五：童蒙，吉。","上九：击蒙，不利为寇，利御寇。"]},
+{"n":5,"name":"水天需","up":"坎","low":"乾","lines":[7,7,7,8,7,8],"f":"吉","j":"有孚，光亨，贞吉。利涉大川。","m":"需为等待、需要之时，如水在天上，云聚未雨。此卦主耐心守时，养精蓄锐，时机成熟自然亨通。","a":"事业：宜蓄势待发，不可急躁，等待良机；感情：缘分尚需时日，耐心培养；财运：等待时机，不宜急进；健康：注意饮食调理，顺其自然。","c":"【结论】此事可成，但需要等待时机。耐心守候，时机一到自然水到渠成，切勿急躁冒进。","lt":["初九：需于郊，利用恒，无咎。","九二：需于沙，小有言，终吉。","九三：需于泥，致寇至。","六四：需于血，出自穴。","九五：需于酒食，贞吉。","上六：入于穴，有不速之客三人来，敬之终吉。"]},
+{"n":6,"name":"天水讼","up":"乾","low":"坎","lines":[8,7,8,7,7,7],"f":"凶","j":"有孚窒惕，中吉，终凶。利见大人，不利涉大川。","m":"讼为争讼之象，主争执、纠纷。此卦警示：争讼虽可短暂得利，终非善果，宜及早化解，求人调解。","a":"事业：谨防纠纷，宜避锋芒，沟通和解为上；感情：口舌之争频起，宜冷静退让；财运：谨防合约纠纷，勿存侥幸；健康：肝火易旺，注意情绪。","c":"【结论】此事不宜争执对抗，争则两败俱伤。宜退让和解、寻求调解，以和为贵方为上策。","lt":["初六：不永所事，小有言，终吉。","九二：不克讼，归而逋，其邑人三百户，无眚。","六三：食旧德，贞厉，终吉。或从王事，无成。","九四：不克讼，复即命，渝安贞，吉。","九五：讼，元吉。","上九：或锡之鞶带，终朝三褫之。"]},
+{"n":7,"name":"地水师","up":"坤","low":"坎","lines":[8,7,8,8,8,8],"f":"中平","j":"贞，丈人吉，无咎。","m":"师为兴师动众之象，主组织、管理、用人之道。此卦宜立正名、任贤能，谋定而后动。","a":"事业：宜组织协调，用人之长，谋定后动；感情：需同心协力，忌独断专行；财运：宜团队合作，勿孤军奋战；健康：注意劳逸结合，量力而行。","c":"【结论】此事需组织众人之力方可成。宜选贤任能、统一号令，有备则成，无备则败。","lt":["初六：师出以律，否臧凶。","九二：在师中，吉，无咎，王三锡命。","六三：师或舆尸，凶。","六四：师左次，无咎。","六五：田有禽，利执言，无咎。长子帅师，弟子舆尸，贞凶。","上六：大君有命，开国承家，小人勿用。"]},
+{"n":8,"name":"水地比","up":"坎","low":"坤","lines":[8,8,8,8,7,8],"f":"吉","j":"吉。原筮元永贞，无咎。不宁方来，后夫凶。","m":"比为亲比、团结之象，如水附大地。此卦主和睦互助，择善而从，诚信团结则诸事顺遂。","a":"事业：宜广结善缘，与人为善，合作共赢；感情：亲密和谐，宜真诚相待；财运：人脉生财，互助互利；健康：身心调和，宜多亲近自然。","c":"【结论】此事吉利，贵在团结协作。以诚待人、与人合作，则万事顺遂；孤军奋战则难成。","lt":["初六：有孚比之，无咎。有孚盈缶，终来有它，吉。","六二：比之自内，贞吉。","六三：比之匪人。","六四：外比之，贞吉。","九五：显比，王用三驱，失前禽，邑人不诫，吉。","上六：比之无首，凶。"]},
+{"n":9,"name":"风天小畜","up":"巽","low":"乾","lines":[7,7,7,8,7,7],"f":"吉","j":"亨。密云不雨，自我西郊。","m":"小畜为小有积蓄、力量未足之象，如密云未雨。此卦主暂缓大举，先蓄小成，积少成多。","a":"事业：条件未备，宜小步积累，勿贪大求全；感情：感情尚浅，宜细水长流；财运：小有积蓄，防微杜渐；健康：微恙调养，勿小病拖大。","c":"【结论】此事小有成果，但尚不足以成大事。宜继续积蓄力量，待时机成熟再图大举。","lt":["初九：复自道，何其咎，吉。","九二：牵复，吉。","九三：舆说辐，夫妻反目。","六四：有孚，血去惕出，无咎。","九五：有孚挛如，富以其邻。","上九：既雨既处，尚德载，妇贞厉。月几望，君子征凶。"]},
+{"n":10,"name":"天泽履","up":"乾","low":"兑","lines":[7,7,8,7,7,7],"f":"中平","j":"履虎尾，不咥人，亨。","m":"履为践履、行走之象，如踩虎尾而虎不伤人。此卦主谨慎行事、如履薄冰，以礼自持则化险为夷。","a":"事业：步步为营，谨慎为上，忌轻率冒进；感情：相处宜守礼，细水长流；财运：风险潜藏，稳健操作；健康：注意脚下安全，防滑防摔。","c":"【结论】此事有险但可化。只要谨慎守礼、按规矩行事，虽处险境亦能安然无恙。","lt":["初九：素履往，无咎。","九二：履道坦坦，幽人贞吉。","六三：眇能视，跛能履，履虎尾，咥人，凶。武人为于大君。","九四：履虎尾，愬愬终吉。","九五：夬履，贞厉。","上九：视履考祥，其旋元吉。"]},
+{"n":11,"name":"地天泰","up":"坤","low":"乾","lines":[7,7,7,8,8,8],"f":"大吉","j":"小往大来，吉亨。","m":"泰为通泰、安定之象，天地交而万物通。此卦上下交泰，诸事顺遂，宜乘势而上，大展抱负。","a":"事业：顺风顺水，宜把握良机，居安思危；感情：两情相悦，和谐美满；财运：财源亨通，正逢其时；健康：身心安泰，注意勿过度劳累。","c":"【结论】此事大吉，天地交泰、万事亨通。正是顺风顺水之时，宜大胆行动，必有所成。","lt":["初九：拔茅茹，以其汇，征吉。","九二：包荒，用冯河，不遐遗，朋亡，得尚于中行。","九三：无平不陂，无往不复，艰贞无咎。勿恤其孚，于食有福。","六四：翩翩不富，以其邻，不戒以孚。","六五：帝乙归妹，以祉元吉。","上六：城复于隍，勿用师，自邑告命，贞吝。"]},
+{"n":12,"name":"天地否","up":"乾","low":"坤","lines":[8,8,8,7,7,7],"f":"凶","j":"否之匪人，不利君子贞，大往小来。","m":"否为闭塞不通之象，天地不交。此卦主时运阻滞，宜收敛韬晦，静待时变，不可强为。","a":"事业：诸事不顺，宜守勿进，蓄力待时；感情：沟通不畅，易生隔阂，宜多体谅；财运：财路闭塞，宜节流守成；健康：气机不畅，注意疏解情绪。","c":"【结论】此事难成，时运不济。当下诸事闭塞，不宜强求，宜守静待变，否极泰来。","lt":["初六：拔茅茹，以其汇，贞吉亨。","六二：包承，小人吉，大人否亨。","六三：包羞。","九四：有命无咎，畴离祉。","九五：休否，大人吉。其亡其亡，系于苞桑。","上九：倾否，先否后喜。"]},
+{"n":13,"name":"天火同人","up":"乾","low":"离","lines":[7,8,7,7,7,7],"f":"吉","j":"同人于野，亨。利涉大川，利君子贞。","m":"同人为和同、大同之象，如天日高照，光明和同。此卦主与人合作，同心协力，则无往不利。","a":"事业：宜与人携手，广开言路，共谋发展；感情：志同道合，缘分可期；财运：合伙生财，共享共赢；健康：心胸开阔，利于康复。","c":"【结论】此事可成，关键在于志同道合。与人合作、同心协力，则无往不利。","lt":["初九：同人于门，无咎。","六二：同人于宗，吝。","九三：伏戎于莽，升其高陵，三岁不兴。","九四：乘其墉，弗克攻，吉。","九五：同人先号啕而后笑，大师克相遇。","上九：同人于郊，无悔。"]},
+{"n":14,"name":"火天大有","up":"离","low":"乾","lines":[7,7,7,7,8,7],"f":"大吉","j":"元亨。","m":"大有为盛大丰有之象，如火在天上，光明普照。此卦主收获丰盈，声望日隆，宜顺势广济，戒骄戒盈。","a":"事业：成果丰硕，宜乘胜进取，居功不傲；感情：情谊丰盈，宜珍惜守成；财运：收获颇丰，宜开源节流；健康：精力旺盛，注意节制。","c":"【结论】此事大吉，收获丰盈。正是丰收之际，宜乘势而为，但切记戒骄戒盈，方可长久。","lt":["初九：无交害，匪咎，艰则无咎。","九二：大车以载，有攸往，无咎。","九三：公用亨于天子，小人弗克。","九四：匪其彭，无咎。","六五：厥孚交如，威如，吉。","上九：自天佑之，吉无不利。"]},
+{"n":15,"name":"地山谦","up":"坤","low":"艮","lines":[8,8,7,8,8,8],"f":"大吉","j":"亨，君子有终。","m":"谦为谦逊、谦和之象，如山藏于地中，内高而外卑。此卦六爻皆吉，主虚己待人、谦受益，德行可成大事。","a":"事业：谦和待人，反得助力，忌张扬自满；感情：以谦让包容相处，感情弥深；财运：低调积财，细水长流；健康：性情平和，身心康泰。","c":"【结论】此事大吉，谦者受益。以谦和之心待人处世，必得众人助力，万事皆顺。","lt":["初六：谦谦君子，用涉大川，吉。","六二：鸣谦，贞吉。","九三：劳谦，君子有终，吉。","六四：无不利，撝谦。","六五：不富以其邻，利用侵伐，无不利。","上六：鸣谦，利用行师，征邑国。"]},
+{"n":16,"name":"雷地豫","up":"震","low":"坤","lines":[8,8,8,7,8,8],"f":"吉","j":"利建侯行师。","m":"豫为和乐、预备之象，如雷出地奋，万物欢腾。此卦主顺势而动，乐中有备，切忌乐极生悲、安逸懈怠。","a":"事业：形势和顺，宜顺势布局，未雨绸缪；感情：关系欢愉，宜增进默契；财运：行情向好，宜留有余地；健康：心情舒畅，注意劳逸有度。","c":"【结论】此事吉利，形势和顺。宜顺势而为，趁势推进，但不可得意忘形，需居安思危。","lt":["初六：鸣豫，凶。","六二：介于石，不终日，贞吉。","六三：盱豫，悔。迟有悔。","九四：由豫，大有得。勿疑，朋盍簪。","六五：贞疾，恒不死。","上六：冥豫，成有渝，无咎。"]},
+{"n":17,"name":"泽雷随","up":"兑","low":"震","lines":[7,8,8,7,7,8],"f":"吉","j":"元亨，利贞，无咎。","m":"随为随顺、随从之象，如雷入泽中，随势而动。此卦主随机应变、择善而从，以正相随则吉。","a":"事业：宜顺应时势，灵活调整，勿固守成规；感情：随缘而合，相互迁就；财运：随行就市，顺势而为；健康：随遇而安，心情舒畅。","c":"【结论】此事可成，贵在随机应变。顺应时势、择善而从，则事事顺遂。","lt":["初九：官有渝，贞吉。出门交有功。","六二：系小子，失丈夫。","六三：系丈夫，失小子。随有求得，利居贞。","九四：随有获，贞凶。有孚在道，以明，何咎。","九五：孚于嘉，吉。","上六：拘系之，乃从维之。王用亨于西山。"]},
+{"n":18,"name":"山风蛊","up":"艮","low":"巽","lines":[8,7,7,8,8,7],"f":"凶","j":"元亨，利涉大川。先甲三日，后甲三日。","m":"蛊为积弊腐败之象，如器久生虫。此卦主整顿治理、革除积弊，虽乱可治，宜痛下决心。","a":"事业：积弊已久，宜果断整顿，拨乱反正；感情：旧怨沉积，宜坦诚化解；财运：老问题困扰，须清理旧账；健康：久病宜根治，勿讳疾忌医。","c":"【结论】此事有积弊阻碍，不可坐视。须下决心整顿清理，虽过程辛苦，但拨乱反正后终可成事。","lt":["初六：干父之蛊，有子，考无咎，厉终吉。","九二：干母之蛊，不可贞。","九三：干父之蛊，小有悔，无大咎。","六四：裕父之蛊，往见吝。","六五：干父之蛊，用誉。","上九：不事王侯，高尚其事。"]},
+{"n":19,"name":"地泽临","up":"坤","low":"兑","lines":[7,7,8,8,8,8],"f":"吉","j":"元亨利贞。至于八月有凶。","m":"临为降临、君临之象，如地厚临泽。此卦主居高临下、亲临其位，宜把握当下，当机立断。","a":"事业：时机大好，宜亲力亲为，抓住当下；感情：宜主动亲近，感情升温；财运：行情正盛，乘势而为；健康：注意未雨绸缪，防患未然。","c":"【结论】此事大好，时机已到。宜亲力亲为、当机立断，趁势推进必有收获，但勿忘居安思危。","lt":["初九：咸临，贞吉。","九二：咸临，吉无不利。","六三：甘临，无攸利。既忧之，无咎。","六四：至临，无咎。","六五：知临，大君之宜，吉。","上六：敦临，吉无咎。"]},
+{"n":20,"name":"风地观","up":"巽","low":"坤","lines":[8,8,8,8,7,7],"f":"中平","j":"盥而不荐，有孚颙若。","m":"观为观察、观望之象，如风行地上，遍观万物。此卦主审时度势、静观其变，宜修身立德以观天下。","a":"事业：宜冷静观察，谋定后动，忌草率决策；感情：宜多观察了解，勿急于定论；财运：观望为主，待明朗再动；健康：宜静养调息，内观自省。","c":"【结论】此事尚需观望，不宜急于行动。冷静观察、审时度势，待局势明朗后再做决定为宜。","lt":["初六：童观，小人无咎，君子吝。","六二：窥观，利女贞。","六三：观我生，进退。","六四：观国之光，利用宾于王。","九五：观我生，君子无咎。","上九：观其生，君子无咎。"]},
+{"n":21,"name":"火雷噬嗑","up":"离","low":"震","lines":[7,8,8,7,8,7],"f":"中平","j":"亨。利用狱。","m":"噬嗑为咬合、审断之象，如口中有物，须咬断而后合。此卦主裁决是非、清除阻碍，宜明断刚决。","a":"事业：有阻碍须果断排除，依法依规处理；感情：误会隔阂，宜说清道明；财运：宜审慎合约，防口舌官司；健康：注意牙口食伤，及时就医。","c":"【结论】此事有阻碍横亘其间，须果断清除。明断是非、排除障碍后，事方可成。","lt":["初九：屦校灭趾，无咎。","六二：噬肤灭鼻，无咎。","六三：噬腊肉，遇毒，小吝，无咎。","九四：噬干胏，得金矢，利艰贞，吉。","六五：噬干肉，得黄金，贞厉，无咎。","上九：何校灭耳，凶。"]},
+{"n":22,"name":"山火贲","up":"艮","low":"离","lines":[7,8,7,8,8,7],"f":"吉","j":"亨。小利有攸往。","m":"贲为文饰、修饰之象，如山下有火，光映文采。此卦主重仪表修饰，但须文质彬彬，勿重外轻内。","a":"事业：宜注重形象与包装，但根基仍要扎实；感情：浪漫点缀，增进情调；财运：装饰行业可期，勿华而不实；健康：内外兼修，养心养颜。","c":"【结论】此事小有可为，重在修饰包装。外表与内涵并重则吉，华而不实则难成。","lt":["初九：贲其趾，舍车而徒。","六二：贲其须。","九三：贲如濡如，永贞吉。","六四：贲如皤如，白马翰如，匪寇婚媾。","六五：贲于丘园，束帛戋戋，吝，终吉。","上九：白贲，无咎。"]},
+{"n":23,"name":"山地剥","up":"艮","low":"坤","lines":[8,8,8,8,8,7],"f":"凶","j":"不利有攸往。","m":"剥为剥落、侵蚀之象，如山石剥落于地。此卦阴盛阳衰，主根基受损、小人得势，宜守静待变。","a":"事业：环境不利，宜守成收缩，勿轻举妄动；感情：关系易生变故，宜稳住心态；财运：防财物受损，谨慎投资；健康：防身体耗损，注意保养。","c":"【结论】此事难成，根基受损，小人当道。此时不宜行动，宜守静蛰伏，待时运转好再图后事。","lt":["初六：剥床以足，蔑贞凶。","六二：剥床以辨，蔑贞凶。","六三：剥之，无咎。","六四：剥床以肤，凶。","六五：贯鱼，以宫人宠，无不利。","上九：硕果不食，君子得舆，小人剥庐。"]},
+{"n":24,"name":"地雷复","up":"坤","low":"震","lines":[7,8,8,8,8,8],"f":"吉","j":"亨。出入无疾，朋来无咎。反复其道，七日来复。利有攸往。","m":"复为回复、复兴之象，如冬至一阳来复。此卦主否极泰来、阳气初生，宜把握新生机，静养蓄力。","a":"事业：转机初现，宜稳步回升，勿再冒进；感情：旧情或可重修，宜真诚以待；财运：低谷将过，渐入佳境；健康：元气渐复，注意休养。","c":"【结论】此事转机已现，否极泰来。低谷已过，新机初生，宜稳步前行，把握复苏良机。","lt":["初九：不远复，无祗悔，元吉。","六二：休复，吉。","六三：频复，厉，无咎。","六四：中行独复。","六五：敦复，无悔。","上六：迷复，凶，有灾眚。用行师，终有大败。"]},
+{"n":25,"name":"天雷无妄","up":"乾","low":"震","lines":[7,8,8,7,7,7],"f":"中平","j":"元亨利贞。其匪正有眚，不利有攸往。","m":"无妄为不妄为、真诚无欺之象，如雷动天下，万物应时而动。此卦主以诚待事，不存侥幸，行正则吉。","a":"事业：宜脚踏实地，勿存非分之想；感情：真诚相待，忌虚情假意；财运：守正财稳，勿贪意外之财；健康：作息规律，忌妄耗元气。","c":"【结论】此事可行，但须以诚待之、守正道。不存侥幸、不妄为，则顺理成章；若有非分之想，反遭其祸。","lt":["初九：无妄，往吉。","六二：不耕获，不菑畬，则利有攸往。","六三：无妄之灾，或系之牛，行人之得，邑人之灾。","九四：可贞，无咎。","九五：无妄之疾，勿药有喜。","上九：无妄，行有眚，无攸利。"]},
+{"n":26,"name":"山天大畜","up":"艮","low":"乾","lines":[7,7,7,8,8,7],"f":"吉","j":"利贞。不家食吉，利涉大川。","m":"大畜为大有积蓄之象，如天藏于山中，厚积薄发。此卦主才德蓄养已丰，可出而任事，一展所长。","a":"事业：积累已足，宜大胆出山，担当重任；感情：情谊深厚，宜定终身之盟；财运：积蓄丰厚，宜扩大经营；健康：根基扎实，注意防微杜渐。","c":"【结论】此事可成，蓄积已足。厚积薄发之时已到，宜大胆出山、担当重任，必有所成。","lt":["初九：有厉，利已。","九二：舆说輹。","九三：良马逐，利艰贞。曰闲舆卫，利有攸往。","六四：童牛之牿，元吉。","六五：豮豕之牙，吉。","上九：何天之衢，亨。"]},
+{"n":27,"name":"山雷颐","up":"艮","low":"震","lines":[7,8,8,8,8,7],"f":"中平","j":"贞吉。观颐，自求口实。","m":"颐为颐养之象，如山下有雷，动而养物。此卦主养身养德、自食其力，宜慎言语、节饮食。","a":"事业：宜稳扎稳打，靠自身实力立足；感情：宜细水长流，用心经营；财运：宜自食其力，量入为出；健康：重在调养，节饮食慎言语。","c":"【结论】此事须靠自身实力，不可依赖他人。养精蓄锐、充实自我，根基稳固后方可有所作为。","lt":["初九：舍尔灵龟，观我朵颐，凶。","六二：颠颐，拂经，于丘颐，征凶。","六三：拂颐，贞凶，十年勿用，无攸利。","六四：颠颐吉，虎视眈眈，其欲逐逐，无咎。","六五：拂经，居贞吉，不可涉大川。","上九：由颐，厉吉，利涉大川。"]},
+{"n":28,"name":"泽风大过","up":"兑","low":"巽","lines":[8,7,7,7,7,8],"f":"凶","j":"栋桡，利有攸往，亨。","m":"大过为大过其常、负重之象，如栋梁弯曲，泽灭木。此卦主危机重重、力不从心，宜非常之时行非常之事。","a":"事业：压力重大，须独当一面，非常措施；感情：关系失衡，须特别用心；财运：风险加大，宜谨慎担当；健康：透支过度，须格外保养。","c":"【结论】此事压力巨大，已超常轨。须以非常之策应对，若能挺过难关则有转机，否则难以为继。","lt":["初六：藉用白茅，无咎。","九二：枯杨生稊，老夫得其女妻，无不利。","九三：栋桡，凶。","九四：栋隆，吉。有它吝。","九五：枯杨生华，老妇得其士夫，无咎无誉。","上六：过涉灭顶，凶，无咎。"]},
+{"n":29,"name":"坎为水","up":"坎","low":"坎","lines":[8,7,8,8,7,8],"f":"凶","j":"习坎，有孚，维心亨，行有尚。","m":"坎为险陷之象，如水之重叠，险中有险。此卦主身处险境，宜诚信自守、心志坚定，可化险为夷。","a":"事业：处境艰难，宜谨慎自守，勿陷更险；感情：波折重重，宜以诚相待；财运：慎防陷阱，稳健为先；健康：防险防灾，注意安全。","c":"【结论】此事险阻重重，如履薄冰。但若心怀诚信、坚定信念，虽处险境终能化险为夷。","lt":["初六：习坎，入于坎窞，凶。","九二：坎有险，求小得。","六三：来之坎坎，险且枕，入于坎窞，勿用。","六四：樽酒簋贰，用缶，纳约自牖，终无咎。","九五：坎不盈，祗既平，无咎。","上六：系用徽纆，寘于丛棘，三岁不得，凶。"]},
+{"n":30,"name":"离为火","up":"离","low":"离","lines":[7,8,7,7,8,7],"f":"吉","j":"利贞，亨。畜牝牛，吉。","m":"离为附丽、光明之象，如火之明，丽于万物。此卦主光明磊落、依附正道，宜柔顺守正而附于明处。","a":"事业：光明正大，宜依附平台，展现才华；感情：热情明丽，宜以诚相守；财运：光明正大得财，忌偏门；健康：心火宜清，注意养心。","c":"【结论】此事光明正大，可成。依附正道、柔顺守正，则前途光明；若走偏门则反受其害。","lt":["初九：履错然，敬之无咎。","六二：黄离，元吉。","九三：日昃之离，不鼓缶而歌，则大耋之嗟，凶。","九四：突如其来如，焚如，死如，弃如。","六五：出涕沱若，戚嗟若，吉。","上九：王用出征，有嘉折首，获匪其丑，无咎。"]},
+{"n":31,"name":"泽山咸","up":"兑","low":"艮","lines":[8,8,7,7,7,8],"f":"吉","j":"亨，利贞，取女吉。","m":"咸为交感、感应之象，如泽润山，山承泽，两情相感。此卦主男女感通、心灵契合，宜以诚感人。","a":"事业：人际融洽，宜以诚相待，合作默契；感情：两心相印，正是婚恋良机；财运：同心协力，人脉生财；健康：身心感应调和，注意情绪。","c":"【结论】此事吉利，感应相通。两心相印、以诚相待，则事事和谐，正是良缘佳期。","lt":["初六：咸其拇。","六二：咸其腓，凶，居吉。","九三：咸其股，执其随，往吝。","九四：贞吉悔亡，憧憧往来，朋从尔思。","九五：咸其脢，无悔。","上六：咸其辅颊舌。"]},
+{"n":32,"name":"雷风恒","up":"震","low":"巽","lines":[8,7,7,7,8,8],"f":"吉","j":"亨，无咎，利贞，利有攸往。","m":"恒为恒久、持久之象，如雷风相与，恒常不息。此卦主持之以恒、守常不变，宜坚守正道，日久见功。","a":"事业：宜持之以恒，勿轻易改弦更张；感情：守常相守，方能长久；财运：稳健积累，忌投机取巧；健康：坚持锻炼，贵在恒心。","c":"【结论】此事可成，贵在持之以恒。坚守正道、始终如一，则日久功深，必有所成。","lt":["初六：浚恒，贞凶，无攸利。","九二：悔亡。","九三：不恒其德，或承之羞，贞吝。","九四：田无禽。","六五：恒其德，贞，妇人吉，夫子凶。","上六：振恒，凶。"]},
+{"n":33,"name":"天山遁","up":"乾","low":"艮","lines":[8,8,7,7,7,7],"f":"中平","j":"亨，小利贞。","m":"遁为退避、隐遁之象，如天远山深，宜退守。此卦主时势不利，宜及时退让、明哲保身，退而能守则亨。","a":"事业：宜急流勇退，保存实力，勿恋栈；感情：宜适时抽身，冷静观望；财运：见好就收，忌贪图；健康：宜静养避扰，远离纷争。","c":"【结论】此事宜退不宜进。当下时势不利，明智退让、保存实力方为上策，强行推进反遭损失。","lt":["初六：遁尾，厉，勿用有攸往。","六二：执之用黄牛之革，莫之胜说。","九三：系遁，有疾厉，畜臣妾吉。","九四：好遁，君子吉，小人否。","九五：嘉遁，贞吉。","上九：肥遁，无不利。"]},
+{"n":34,"name":"雷天大壮","up":"震","low":"乾","lines":[7,7,7,7,8,8],"f":"中平","j":"利贞。","m":"大壮为阳刚壮盛之象，如雷震天上，声势浩大。此卦主气势正盛，但盛极须防，宜守正而行，勿恃强妄为。","a":"事业：声势浩大，宜乘势而进，戒骄戒躁；感情：热情高涨，勿太过强势；财运：行情旺盛，宜适可而止；健康：阳亢宜平，注意血压。","c":"【结论】此事气势正盛，可乘势而进。但盛极必衰，须守正道、适可而止，不可恃强凌弱。","lt":["初九：壮于趾，征凶，有孚。","九二：贞吉。","九三：小人用壮，君子用罔，贞厉。羝羊触藩，羸其角。","九四：贞吉悔亡，藩决不羸，壮于大舆之輹。","六五：丧羊于易，无悔。","上六：羝羊触藩，不能退，不能遂，无攸利，艰则吉。"]},
+{"n":35,"name":"火地晋","up":"离","low":"坤","lines":[8,8,8,7,8,7],"f":"吉","j":"康侯用锡马蕃庶，昼日三接。","m":"晋为晋升、前进之象，如日出地上，光明上升。此卦主步步高升、前程光明，宜顺势进取。","a":"事业：晋升有望，宜积极表现，把握机遇；感情：关系升温，宜主动经营；财运：财运上升，宜把握节奏；健康：阳气渐盛，精神振奋。","c":"【结论】此事吉利，前途光明。正是步步高升之时，宜积极进取、把握机遇，必有晋升之喜。","lt":["初六：晋如摧如，贞吉。罔孚，裕无咎。","六二：晋如愁如，贞吉。受兹介福，于其王母。","六三：众允，悔亡。","九四：晋如鼫鼠，贞厉。","六五：悔亡，失得勿恤，往吉，无不利。","上九：晋其角，维用伐邑，厉吉无咎，贞吝。"]},
+{"n":36,"name":"地火明夷","up":"坤","low":"离","lines":[7,8,7,8,8,8],"f":"凶","j":"利艰贞。","m":"明夷为光明受伤之象，如日入地中，贤者蒙尘。此卦主时运晦暗、受制于小人，宜内明外晦、艰贞守志。","a":"事业：环境昏暗，宜韬光养晦，勿锋芒毕露；感情：宜低调经营，谨防是非；财运：宜守不宜进，藏富于内；健康：内火宜清，注意休养。","c":"【结论】此事难成，时运晦暗。光明受挫，宜韬光养晦、隐忍守志，待时运好转再图后事。","lt":["初九：明夷于飞，垂其翼。君子于行，三日不食。有攸往，主人有言。","六二：明夷，夷于左股，用拯马壮，吉。","九三：明夷于南狩，得其大首，不可疾贞。","六四：入于左腹，获明夷之心，于出门庭。","六五：箕子之明夷，利贞。","上六：不明晦，初登于天，后入于地。"]},
+{"n":37,"name":"风火家人","up":"巽","low":"离","lines":[7,8,7,8,7,7],"f":"吉","j":"利女贞。","m":"家人为家庭和睦之象，如风自火出，家道兴隆。此卦主治家有道、各安其分，宜以德齐家、和气生财。","a":"事业：宜守本分，家和则事兴；感情：宜相敬如宾，共建家园；财运：宜勤俭持家，稳中求进；健康：家庭和睦，身心愉悦。","c":"【结论】此事可成，家和万事兴。内部和睦、各安其分，则事业顺遂；若内部不和，外事难成。","lt":["初九：闲有家，悔亡。","六二：无攸遂，在中馈，贞吉。","九三：家人嗃嗃，悔厉吉。妇子嘻嘻，终吝。","六四：富家，大吉。","九五：王假有家，勿恤，吉。","上九：有孚威如，终吉。"]},
+{"n":38,"name":"火泽睽","up":"离","low":"兑","lines":[7,7,8,7,8,7],"f":"凶","j":"小事吉。","m":"睽为乖离、背反之象，如火上泽下，两不相涉。此卦主分歧对立、意见相左，宜求同存异，先合小事。","a":"事业：意见不合，宜避大求小，缓和分歧；感情：易生嫌隙，宜多沟通包容；财运：合伙易散，宜独立谨慎；健康：注意口角生火，平心静气。","c":"【结论】此事难成大事，分歧明显。小事尚可勉强，大事则意见相左，宜求同存异、等待转机。","lt":["初九：悔亡。丧马勿逐，自复。见恶人，无咎。","九二：遇主于巷，无咎。","六三：见舆曳，其牛掣，其人天且劓，无初有终。","九四：睽孤，遇元夫，交孚，厉无咎。","六五：悔亡，厥宗噬肤，往何咎。","上九：睽孤，见豕负涂，载鬼一车。先张之弧，后说之弧，匪寇婚媾，往遇雨则吉。"]},
+{"n":39,"name":"水山蹇","up":"坎","low":"艮","lines":[8,8,7,8,7,8],"f":"凶","j":"利西南，不利东北。利见大人，贞吉。","m":"蹇为跛行难进之象，如涉水登山，险阻重重。此卦主前进受阻，宜反身修德、寻求贵人，勿强行。","a":"事业：阻力重重，宜绕道而行，求助贤者；感情：障碍难越，宜耐心化解；财运：进展艰难，宜稳守观望；健康：行止多艰，注意防护。","c":"【结论】此事困难重重，强行不得。宜绕道而行、求助贵人，迂回前进方可化解险阻。","lt":["初六：往蹇，来誉。","六二：王臣蹇蹇，匪躬之故。","九三：往蹇，来反。","六四：往蹇，来连。","九五：大蹇，朋来。","上六：往蹇来硕，吉，利见大人。"]},
+{"n":40,"name":"雷水解","up":"震","low":"坎","lines":[8,7,8,7,8,8],"f":"吉","j":"利西南。无所往，其来复吉。有攸往，夙吉。","m":"解为解除、缓解之象，如雷雨大作，郁结消散。此卦主困难冰释、万事解除，宜趁势解决问题。","a":"事业：困局已解，宜乘势清理旧患；感情：误会冰释，和好如初；财运：资金回笼，运转复常；健康：病势缓解，宜巩固调理。","c":"【结论】此事吉利，困局已解。正是拨云见日之时，宜趁势清理障碍、解决问题，必顺利达成。","lt":["初六：无咎。","九二：田获三狐，得黄矢，贞吉。","六三：负且乘，致寇至，贞吝。","九四：解而拇，朋至斯孚。","六五：君子维有解，吉，有孚于小人。","上六：公用射隼于高墉之上，获之，无不利。"]},
+{"n":41,"name":"山泽损","up":"艮","low":"兑","lines":[7,7,8,8,8,7],"f":"中平","j":"有孚，元吉，无咎，可贞，利有攸往。曷之用，二簋可用享。","m":"损为减损、损己益人之象，如山高泽低，损下益上。此卦主有所付出，宜诚信为善，损中自有得。","a":"事业：先舍后得，宜甘于付出；感情：宜多付出体谅，感情更坚；财运：小额投入，可换长远之利；健康：节损欲望，宜养精气。","c":"【结论】此事须先有付出方有回报。有所舍方有所得，以诚心付出，则损极必益。","lt":["初九：已事遄往，无咎，酌损之。","九二：利贞，征凶，弗损益之。","六三：三人行，则损一人；一人行，则得其友。","六四：损其疾，使遄有喜，无咎。","六五：或益之十朋之龟，弗克违，元吉。","上九：弗损益之，无咎，贞吉，利有攸往，得臣无家。"]},
+{"n":42,"name":"风雷益","up":"巽","low":"震","lines":[7,8,8,8,7,7],"f":"大吉","j":"利有攸往，利涉大川。","m":"益为增益、受益之象，如风雷相助，损上益下。此卦主上下相应、获益良多，宜积极进取、广行善举。","a":"事业：大有裨益，宜乘势而上，广纳良言；感情：情投意合，宜增进付出；财运：财运受益，宜再投入；健康：气血调和，宜适度锻炼。","c":"【结论】此事大吉大利，获益良多。正是锦上添花之时，宜积极进取、大胆行动，必大有收获。","lt":["初九：利用为大作，元吉，无咎。","六二：或益之十朋之龟，弗克违，永贞吉。王用享于帝，吉。","六三：益之用凶事，无咎。有孚中行，告公用圭。","六四：中行告公从，利用为依迁国。","九五：有孚惠心，勿问元吉。有孚惠我德。","上九：莫益之，或击之，立心勿恒，凶。"]},
+{"n":43,"name":"泽天夬","up":"兑","low":"乾","lines":[7,7,7,7,7,8],"f":"中平","j":"扬于王庭，孚号有厉。告自邑，不利即戎，利有攸往。","m":"夬为决断、决去之象，如泽水决堤于天上。此卦主当断则断、清除小人，宜光明正大，果断而不滥武。","a":"事业：宜果断决策，扫除障碍，切忌犹豫；感情：当断则断，勿拖泥带水；财运：宜清理不良资产；健康：防气血上冲，宜疏解。","c":"【结论】此事须果断决断，不可犹豫。当断则断，清除障碍后方可前进，但须光明正大行事。","lt":["初九：壮于前趾，往不胜为咎。","九二：惕号，莫夜有戎，勿恤。","九三：壮于頄，有凶。君子夬夬，独行遇雨，若濡有愠，无咎。","九四：臀无肤，其行次且。牵羊悔亡，闻言不信。","九五：苋陆夬夬，中行无咎。","上六：无号，终有凶。"]},
+{"n":44,"name":"天风姤","up":"乾","low":"巽","lines":[8,7,7,7,7,7],"f":"凶","j":"女壮，勿用取女。","m":"姤为相遇、不期而遇之象，如风行天下，邂逅相遇。此卦主阴气初生、防微杜渐，宜谨守本分，勿轻信艳遇。","a":"事业：谨防小人生事，宜防微杜渐；感情：萍水相逢，宜谨慎辨别；财运：慎防诱饵陷阱；健康：防外邪侵扰，注意养生。","c":"【结论】此事不利，暗藏隐患。不期而遇之人或事须谨慎辨别，切勿轻信，防微杜渐方为上策。","lt":["初六：系于金柅，贞吉。有攸往，见凶，羸豕孚蹢躅。","九二：包有鱼，无咎，不利宾。","九三：臀无肤，其行次且，厉，无大咎。","九四：包无鱼，起凶。","九五：以杞包瓜，含章，有陨自天。","上九：姤其角，吝，无咎。"]},
+{"n":45,"name":"泽地萃","up":"兑","low":"坤","lines":[8,8,8,7,7,8],"f":"吉","j":"亨。王假有庙，利见大人，亨，利贞。用大牲吉，利有攸往。","m":"萃为汇聚、聚众之象，如泽聚于地，人聚于德。此卦主人才汇聚、众望所归，宜诚心聚众、共襄盛举。","a":"事业：人气旺盛，宜广聚贤才，共谋大业；感情：缘分汇聚，宜把握良机；财运：财源汇聚，宜善加经营；健康：气机汇聚，注意疏通。","c":"【结论】此事吉利，人心汇聚。众望所归之时，宜诚心聚众、共襄盛举，必成大事。","lt":["初六：有孚不终，乃乱乃萃。若号，一握为笑，勿恤，往无咎。","六二：引吉，无咎，孚乃利用禴。","六三：萃如嗟如，无攸利。往无咎，小吝。","九四：大吉，无咎。","九五：萃有位，无咎。匪孚，元永贞，悔亡。","上六：赍咨涕洟，无咎。"]},
+{"n":46,"name":"地风升","up":"坤","low":"巽","lines":[8,7,7,8,8,8],"f":"吉","j":"元亨，用见大人，勿恤，南征吉。","m":"升为上升、晋升之象，如地中生木，渐次生长。此卦主步步高升、积小成大，宜顺时而上。","a":"事业：蒸蒸日上，宜稳步晋升，循序渐进；感情：感情升温，宜稳步经营；财运：渐入佳境，财源上升；健康：生机勃勃，注意补养。","c":"【结论】此事蒸蒸日上，步步高升。积小成大之时，宜稳步前行、顺势而上，前途一片光明。","lt":["初六：允升，大吉。","九二：孚乃利用禴，无咎。","九三：升虚邑。","六四：王用亨于岐山，吉，无咎。","六五：贞吉，升阶。","上六：冥升，利于不息之贞。"]},
+{"n":47,"name":"泽水困","up":"兑","low":"坎","lines":[8,7,8,7,7,8],"f":"凶","j":"亨，贞，大人吉，无咎。有言不信。","m":"困为困穷、困顿之象，如泽中无水，困龙浅滩。此卦主处境困窘、有口难言，宜守正自持，以待时变。","a":"事业：困顿受压，宜坚守岗位，勿轻举妄动；感情：沟通受阻，宜多些耐心；财运：财困之时，宜节流守成；健康：身心俱疲，宜调养休息。","c":"【结论】此事困难重重，有口难言。当下处境困窘，宜守正自持、默默坚持，待困局自解。","lt":["初六：臀困于株木，入于幽谷，三岁不觌。","九二：困于酒食，朱绂方来，利用享祀，征凶，无咎。","六三：困于石，据于蒺藜，入于其宫，不见其妻，凶。","九四：来徐徐，困于金车，吝，有终。","九五：劓刖，困于赤绂，乃徐有说，利用祭祀。","上六：困于葛藟，于臲卼，曰动悔有悔，征吉。"]},
+{"n":48,"name":"水风井","up":"坎","low":"巽","lines":[8,7,7,8,7,8],"f":"中平","j":"改邑不改井，无丧无得，往来井井。汔至亦未繘井，羸其瓶，凶。","m":"井为水井、养人之象，如木上有水，井养不穷。此卦主修身养德、惠及于人，宜安定本职，勿轻易变动。","a":"事业：宜安于本职，踏实积累，惠及众人；感情：细水长流，用心灌溉；财运：财源稳定，勿舍本逐末；健康：宜固本培元，滋养身心。","c":"【结论】此事平和稳定，不必急于变动。安守本分、用心经营，则细水长流；急于求变反失根本。","lt":["初六：井泥不食，旧井无禽。","九二：井谷射鲋，瓮敝漏。","九三：井渫不食，为我心恻，可用汲，王明并受其福。","六四：井甃，无咎。","九五：井冽，寒泉食。","上六：井收勿幕，有孚元吉。"]},
+{"n":49,"name":"泽火革","up":"兑","low":"离","lines":[7,8,7,7,7,8],"f":"中平","j":"巳日乃孚，元亨利贞，悔亡。","m":"革为变革、革新之象，如泽中有火，水灭火，火涸水。此卦主除旧布新，时机成熟则毅然变革。","a":"事业：宜大胆变革，抓住时机，破旧立新；感情：关系需革新，旧模式当改；财运：转型之机，宜果断调整；健康：宜调整作息，革除积习。","c":"【结论】此事需变革方能成。旧模式已不可行，宜果断破旧立新，时机成熟后毅然行动。","lt":["初九：巩用黄牛之革。","六二：巳日乃革之，征吉，无咎。","九三：征凶，贞厉。革言三就，有孚。","九四：悔亡，有孚改命，吉。","九五：大人虎变，未占有孚。","上六：君子豹变，小人革面，征凶，居贞吉。"]},
+{"n":50,"name":"火风鼎","up":"离","low":"巽","lines":[8,7,7,7,8,7],"f":"吉","j":"元吉，亨。","m":"鼎为鼎新、稳重之象，如火燃木上，烹鼎成新。此卦主革故鼎新、大器晚成，宜守正自重，可成大任。","a":"事业：机遇在握，宜稳重担当，开创新局；感情：关系成熟，宜郑重承诺；财运：新财源开启，宜稳进；健康：宜调养脾胃，注重营养。","c":"【结论】此事大吉，革故鼎新。旧局已破、新局将立，宜稳重担当、郑重其事，必成大器。","lt":["初六：鼎颠趾，利出否，得妾以其子，无咎。","九二：鼎有实，我仇有疾，不我能即，吉。","九三：鼎耳革，其行塞，雉膏不食，方雨亏悔，终吉。","九四：鼎折足，覆公餗，其形渥，凶。","六五：鼎黄耳金铉，利贞。","上九：鼎玉铉，大吉，无不利。"]},
+{"n":51,"name":"震为雷","up":"震","low":"震","lines":[7,8,8,7,8,8],"f":"中平","j":"亨。震来虩虩，笑言哑哑。震惊百里，不丧匕鬯。","m":"震为震动、惊雷之象，如雷声滚滚，震惊百里。此卦主突发变故、惊惧不安，宜临危不乱、以静制动。","a":"事业：突发变动，宜镇定应对，处变不惊；感情：波澜骤起，宜稳住心神；财运：行情震荡，宜沉着操作；健康：惊则气乱，注意安心。","c":"【结论】此事有突发变动，虽惊无险。临危不乱、镇定应对，则虚惊一场后仍可安然。","lt":["初九：震来虩虩，后笑言哑哑，吉。","六二：震来厉，亿丧贝，跻于九陵，勿逐，七日得。","六三：震苏苏，震行无眚。","九四：震遂泥。","六五：震往来厉，亿无丧，有事。","上六：震索索，视矍矍，征凶。震不于其躬，于其邻，无咎。婚媾有言。"]},
+{"n":52,"name":"艮为山","up":"艮","low":"艮","lines":[8,8,7,8,8,7],"f":"中平","j":"艮其背，不获其身，行其庭，不见其人，无咎。","m":"艮为静止、止息之象，如两山并立，岿然不动。此卦主宜止则止、适可而止，宜静养心神，勿妄动。","a":"事业：宜暂停观望，稳守阵地，勿强出头；感情：宜冷静沉淀，暂缓进展；财运：宜止盈守成，勿再追高；健康：宜静养安神，少思少动。","c":"【结论】此事宜止不宜行。当下宜静观其变、适可而止，强行推进反无益处，等待为上。","lt":["初六：艮其趾，无咎，利永贞。","六二：艮其腓，不拯其随，其心不快。","九三：艮其限，列其夤，厉薰心。","六四：艮其身，无咎。","六五：艮其辅，言有序，悔亡。","上九：敦艮，吉。"]},
+{"n":53,"name":"风山渐","up":"巽","low":"艮","lines":[8,8,7,8,7,7],"f":"吉","j":"女归吉，利贞。","m":"渐为渐进、有序之象，如山上之木，渐次成长。此卦主循序渐进、按部就班，宜守正道，勿急于求成。","a":"事业：宜循序渐进，稳步发展，忌一步登天；感情：宜细水长流，水到渠成；财运：财宜渐积，稳中求进；健康：宜循序渐进调养。","c":"【结论】此事可成，但须循序渐进。按部就班、稳步前行，水到渠成；急于求成则欲速不达。","lt":["初六：鸿渐于干，小子厉，有言，无咎。","六二：鸿渐于磐，饮食衎衎，吉。","九三：鸿渐于陆，夫征不复，妇孕不育，凶。利御寇。","六四：鸿渐于木，或得其桷，无咎。","九五：鸿渐于陵，妇三岁不孕，终莫之胜，吉。","上九：鸿渐于逵，其羽可用为仪，吉。"]},
+{"n":54,"name":"雷泽归妹","up":"震","low":"兑","lines":[7,7,8,7,8,8],"f":"凶","j":"征凶，无攸利。","m":"归妹为少女归嫁之象，如泽上有雷，婚姻非正。此卦主名分不正、急于求成，宜安守本分，勿轻率冒进。","a":"事业：名不正则言不顺，宜先正名再行事；感情：宜谨慎对待，勿草率婚恋；财运：忌急功近利，防得而复失；健康：注意情志，防气血不调。","c":"【结论】此事难成，名不正言不顺。时机未到、根基不稳，强行推进反遭其祸，宜安守本分。","lt":["初九：归妹以娣，跛能履，征吉。","九二：眇能视，利幽人之贞。","六三：归妹以须，反归以娣。","九四：归妹愆期，迟归有时。","六五：帝乙归妹，其君之袂不如其娣之袂良。月几望，吉。","上六：女承筐无实，士刲羊无血，无攸利。"]},
+{"n":55,"name":"雷火丰","up":"震","low":"离","lines":[7,8,7,7,8,8],"f":"吉","j":"亨，王假之，勿忧，宜日中。","m":"丰为丰盛、盛大之象，如雷火交加，光明盛大。此卦主如日中天、事业鼎盛，宜把握盛时，居盛思衰。","a":"事业：如日中天，宜大展宏图，居安思危；感情：热情似火，宜珍惜当下；财运：财势丰盈，宜见好就收；健康：阳盛宜养阴，注意平衡。","c":"【结论】此事丰盛，如日中天。正是鼎盛之时，宜大展宏图，但切记盛极必衰，居安思危。","lt":["初九：遇其配主，虽旬无咎，往有尚。","六二：丰其蔀，日中见斗，往得疑疾，有孚发若，吉。","九三：丰其沛，日中见沫，折其右肱，无咎。","九四：丰其蔀，日中见斗，遇其夷主，吉。","六五：来章，有庆誉，吉。","上六：丰其屋，蔀其家，窥其户，阒其无人，三岁不觌，凶。"]},
+{"n":56,"name":"火山旅","up":"离","low":"艮","lines":[8,8,7,7,8,7],"f":"凶","j":"小亨，旅贞吉。","m":"旅为行旅、漂泊之象，如山上起火，行旅无定。此卦主在外奔波、居无定所，宜谨言慎行、柔顺待人。","a":"事业：宜外出求发展，谨慎经营，勿恋栈；感情：聚少离多，宜珍惜相处；财运：在外生财，宜节俭防失；健康：旅途劳顿，注意饮食安全。","c":"【结论】此事难安，在外奔波。漂泊不定之时，宜谨言慎行、柔顺待人，小亨而已，大事难成。","lt":["初六：旅琐琐，斯其所取灾。","六二：旅即次，怀其资，得童仆贞。","九三：旅焚其次，丧其童仆，贞厉。","九四：旅于处，得其资斧，我心不快。","六五：射雉一矢亡，终以誉命。","上九：鸟焚其巢，旅人先笑后号啕。丧牛于易，凶。"]},
+{"n":57,"name":"巽为风","up":"巽","low":"巽","lines":[8,7,7,8,7,7],"f":"吉","j":"小亨，利有攸往，利见大人。","m":"巽为顺入、谦逊之象，如风无孔不入。此卦主柔顺谦逊、因势利导，宜低调行事，以柔克刚。","a":"事业：宜顺应环境，灵活行事，谦虚求进；感情：温柔相待，以柔化刚；财运：宜小步快进，见机行事；健康：宜舒畅情志，防郁结。","c":"【结论】此事可成，以柔克刚。柔顺谦逊、因势利导，则小亨可期；刚强对抗反不利。","lt":["初六：进退，利武人之贞。","九二：巽在床下，用史巫纷若，吉，无咎。","九三：频巽，吝。","六四：悔亡，田获三品。","九五：贞吉悔亡，无不利。无初有终，先庚三日，后庚三日，吉。","上九：巽在床下，丧其资斧，贞凶。"]},
+{"n":58,"name":"兑为泽","up":"兑","low":"兑","lines":[7,7,8,7,7,8],"f":"吉","j":"亨，利贞。","m":"兑为喜悦、和悦之象，如两泽相连，喜悦交流。此卦主言欢意畅、以诚相悦，宜以善感人、和悦处世。","a":"事业：人际和顺，宜广结善缘，和气生财；感情：两情相悦，宜坦诚交流；财运：喜财可得，宜诚信经营；健康：心情愉悦，身心舒畅。","c":"【结论】此事吉利，和悦顺畅。以诚相待、和悦处世，则人际融洽、万事遂心。","lt":["初九：和兑，吉。","九二：孚兑，吉，悔亡。","六三：来兑，凶。","九四：商兑未宁，介疾有喜。","九五：孚于剥，有厉。","上六：引兑。"]},
+{"n":59,"name":"风水涣","up":"巽","low":"坎","lines":[8,7,8,8,7,7],"f":"中平","j":"亨。王假有庙，利涉大川，利贞。","m":"涣为涣散、化解之象，如风行水上，散其郁结。此卦主人心涣散，宜聚拢人心、消除隔阂，以正聚涣。","a":"事业：人心易散，宜多沟通，凝聚共识；感情：隔阂渐解，宜乘势和好；财运：财散可聚，宜整理财务；健康：湿气宜散，注意排解。","c":"【结论】此事人心涣散，须重新凝聚。宜多沟通、消除隔阂，以诚聚人，则散而复聚。","lt":["初六：用拯马壮，吉。","九二：涣奔其机，悔亡。","六三：涣其躬，无悔。","六四：涣其群，元吉。涣有丘，匪夷所思。","九五：涣汗其大号，涣王居，无咎。","上九：涣其血，去逖出，无咎。"]},
+{"n":60,"name":"水泽节","up":"坎","low":"兑","lines":[7,7,8,8,7,8],"f":"吉","j":"亨。苦节不可贞。","m":"节为节制、节度之象，如泽上有水，量入为出。此卦主守礼节制、有度有方，宜自我约束，勿过分苛刻。","a":"事业：宜按部就班，张弛有度；感情：宜保持适度距离，细水长流；财运：节俭守成，量入为出；健康：饮食有节，作息有常。","c":"【结论】此事可成，贵在有度。节制有方、张弛有度，则诸事顺遂；过度放纵或过度苛刻皆不可。","lt":["初九：不出户庭，无咎。","九二：不出门庭，凶。","六三：不节若，则嗟若，无咎。","六四：安节，亨。","九五：甘节，吉，往有尚。","上六：苦节，贞凶，悔亡。"]},
+{"n":61,"name":"风泽中孚","up":"巽","low":"兑","lines":[7,7,8,8,7,7],"f":"吉","j":"豚鱼吉，利涉大川，利贞。","m":"中孚为诚信、中正之象，如风行泽上，诚信感物。此卦主以诚感人、信实守中，宜诚意正心，言行一致。","a":"事业：诚信立身，宜以诚待人，事业可成；感情：以诚相待，信任弥坚；财运：信誉为本，财源自固；健康：心神安定，气机中和。","c":"【结论】此事大吉，以诚为本。心怀诚信、言行一致，则感化万物、无往不利。","lt":["初九：虞吉，有它不燕。","九二：鸣鹤在阴，其子和之。我有好爵，吾与尔靡之。","六三：得敌，或鼓或罢，或泣或歌。","六四：月几望，马匹亡，无咎。","九五：有孚挛如，无咎。","上九：翰音登于天，贞凶。"]},
+{"n":62,"name":"雷山小过","up":"震","low":"艮","lines":[8,8,7,7,8,8],"f":"中平","j":"亨，利贞。可小事，不可大事。飞鸟遗之音，不宜上，宜下，大吉。","m":"小过为小有过越之象，如雷在山上，声不过远。此卦主宜守小慎微、行小事，不宜大举，宜低调。","a":"事业：宜小事入手，不宜摊大摊子；感情：宜小意温存，勿求隆重；财运：宜小本经营，勿贪大；健康：宜防小病小伤，谨慎起居。","c":"【结论】此事可行但仅限小事。小事可成，大事不宜；低调行事、脚踏实地则吉，好高骛远则凶。","lt":["初六：飞鸟以凶。","六二：过其祖，遇其妣；不及其君，遇其臣，无咎。","九三：弗过防之，从或戕之，凶。","九四：无咎，弗过遇之。往厉必戒，勿用永贞。","六五：密云不雨，自我西郊，公弋取彼在穴。","上六：弗遇过之，飞鸟离之，凶，是谓灾眚。"]},
+{"n":63,"name":"水火既济","up":"坎","low":"离","lines":[7,8,7,8,7,8],"f":"中平","j":"亨小，利贞。初吉终乱。","m":"既济为事已成之象，如水在火上，烹饪已成。此卦主大功告成，但盛极防衰，宜居安思危，防患于未然。","a":"事业：功成之际，宜巩固成果，勿骄勿懈；感情：关系圆满，宜继续经营；财运：大局已定，宜落袋为安；健康：宜善后调养，防患未然。","c":"【结论】此事已成，但须防衰。大功告成之际，切忌骄傲懈怠，居安思危、善始善终方可保全。","lt":["初九：曳其轮，濡其尾，无咎。","六二：妇丧其茀，勿逐，七日得。","九三：高宗伐鬼方，三年克之，小人勿用。","六四：繻有衣袽，终日戒。","九五：东邻杀牛，不如西邻之禴祭，实受其福。","上六：濡其首，厉。"]},
+{"n":64,"name":"火水未济","up":"离","low":"坎","lines":[8,7,8,7,8,7],"f":"中平","j":"亨。小狐汔济，濡其尾，无攸利。","m":"未济为事未成之象，如火在水上，功亏一篑。此卦主一切尚在过渡，宜审慎而行，慎终如始。","a":"事业：尚未大成，宜继续努力，善始善终；感情：尚在磨合，宜耐心培养；财运：接近成功，宜稳妥收官；健康：尚未痊愈，宜坚持调养。","c":"【结论】此事尚未成，功亏一篑。距成功仅一步之遥，宜审慎坚持、慎终如始，切勿功败垂成。","lt":["初六：濡其尾，吝。","九二：曳其轮，贞吉。","六三：未济，征凶，利涉大川。","九四：贞吉，悔亡。震用伐鬼方，三年有赏于大国。","六五：贞吉，无悔。君子之光，有孚，吉。","上九：有孚于饮酒，无咎。濡其首，有孚失是。"]}
+];
+window.HEXAGRAMS_BAIHUA={
+1:{t:"大吉大利，有利于守正道。",lt_t:["龙潜伏在水中，不宜有所作为。","龙出现在田野上，有利于拜见贵人。","君子整天勤奋努力，晚上也警惕戒备，虽有危险但没有灾祸。","龙或跳跃于深渊，没有灾祸。","龙飞翔在天上，有利于拜见贵人。","龙飞得太高，会有悔恨。"]},
+2:{t:"大吉大利，像母马一样守正道有利。君子有所往，开始会迷失方向，后来找到主人。西南方得到朋友，东北方失去朋友。安守正道吉祥。",lt_t:["踩到霜，就知道寒冬即将到来。","正直、方正、宏大，即使不熟悉也没有什么不利。","内含美德可以守正道，或从事公务，虽无大成就但能善终。","扎紧口袋，没有灾祸也没有赞誉。","穿着黄色裙裳，大吉大利。","龙在野外争斗，流出玄黄的血。"]},
+3:{t:"大吉大利，有利于守正道。不宜有所往，适合建立诸侯。",lt_t:["徘徊不进，利于安居守正，利于建立诸侯。","困难重重，骑马原地打转。不是强盗而是求亲，女子守正不嫁，十年才嫁。","追鹿没有向导，只会进入林中，君子不如放弃，前往会有困难。","骑马原地打转，去求婚，前往吉祥，没有不利。","恩泽难以下施，小事守正吉祥，大事守正凶险。","骑马原地打转，哭泣不止，泪如雨下。"]},
+4:{t:"通达。不是我求蒙昧的人，是蒙昧的人求我。初次占卜就告诉，再三占卜就是亵渎，亵渎就不告诉。有利于守正道。",lt_t:["启发蒙昧，适宜用刑罚来警示，可脱去枷锁，前往会有困难。","包容蒙昧吉祥，娶妻吉祥，儿子能够治家。","不要娶这样的女子，见到有钱的男人就会失去自我，没有好处。","困于蒙昧之中，会有困难。","处于蒙昧状态，吉祥。","治理蒙昧，不宜进攻，宜于防御。"]},
+5:{t:"有诚信，光明通达，守正吉祥。有利于渡过大河。",lt_t:["在郊外等待，保持恒心有利，没有灾祸。","在沙滩上等待，虽有小的非议，最终吉祥。","在泥泞中等待，会招致敌人到来。","在血泊中等待，从洞穴中逃出。","在酒食中等待，守正吉祥。","进入洞穴，有三位不请自来的客人，恭敬对待最终吉祥。"]},
+6:{t:"诚信被阻塞而警惕，中途吉祥，最终凶险。有利于拜见贵人，不利于渡过大河。",lt_t:["不把事情做绝，虽有小的非议，最终吉祥。","争不过对方，回家躲避，同邑三百户人家没有灾祸。","安享旧有的德禄，守正虽然危险，最终吉祥。或从事公务，没有成就。","争不过对方，回归正道，改变态度安守正道，吉祥。","争讼，大吉。","或被赏赐官服，但一天之内被剥夺三次。"]},
+7:{t:"守正道，老成持重的人吉祥，没有灾祸。",lt_t:["军队出动要有纪律，不遵守纪律就会有凶险。","在军队中，吉祥，没有灾祸，君王多次嘉奖。","军队可能用车运载尸体，凶险。","军队退守到左边，没有灾祸。","田中有禽兽，适宜捕捉，没有灾祸。长子统率军队，弟子用车运载尸体，守正也有凶险。","大君发布命令，开国建邦，小人不可任用。"]},
+8:{t:"吉祥。推究占卜之理，能够始终保持正道，没有灾祸。不安分的人会来归附，迟迟不来的人会有凶险。",lt_t:["以诚信来亲附，没有灾祸。诚信充盈如满缸，最终会有其他收获，吉祥。","从内心来亲附，守正吉祥。","亲附不当的人。","从外面来亲附，守正吉祥。","显明地亲附，君王用三面围猎，放走前面的禽兽，同邑的人没有戒备，吉祥。","亲附没有好的开始，凶险。"]},
+9:{t:"通达。浓云密布但不下雨，从西郊方向来。",lt_t:["回归到正道上，有什么灾祸呢，吉祥。","被牵引着回归，吉祥。","车轮脱落，夫妻不和。","有诚信，远离伤害和恐惧，没有灾祸。","有诚信而紧密相连，与邻居共同富裕。","雨已经停了，德行已经满载，妇人守正虽然危险。月亮接近圆满，君子出征会有凶险。"]},
+10:{t:"踩到老虎尾巴，老虎不咬人，通达。",lt_t:["朴素地前行，没有灾祸。","道路平坦，隐居的人守正吉祥。","眼睛不好却能看，腿脚不好却能走，踩到老虎尾巴，被咬伤，凶险。武人想做大君。","踩到老虎尾巴，谨慎小心最终吉祥。","果断前行，守正虽然危险。","审视行为考察吉凶，周全则大吉。"]},
+11:{t:"小的离去，大的到来，吉祥通达。",lt_t:["拔茅草时连根带出，因为它们同类相聚，出征吉祥。","包容荒秽，徒步过河，不遗弃远方的人，虽然失去朋友，但行为中正值得推崇。","没有一直平坦的，没有只去不回的，坚守正道没有灾祸。不要担心诚信，会有福禄。","与邻居一起轻快前行不计得失，因为有诚信而没有戒备。","帝乙嫁女，带来福佑，大吉。","城墙倒塌到护城河里，不要用兵，从城里发布命令，守正也有困难。"]},
+12:{t:"闭塞不通，不利于君子守正道，大的离去小的到来。",lt_t:["拔茅草时连根带出，因为它们同类相聚，守正吉祥通达。","包容顺承，小人吉祥，大人闭塞但通达。","包容羞辱。","有命运安排没有灾祸，同享福禄。","停止闭塞，大人吉祥。想到灭亡、灭亡，就会像系在桑树根上一样牢固。","闭塞局面被打破，先闭塞后欢喜。"]},
+13:{t:"在郊野与人和同，通达。有利于渡过大河，有利于君子守正。",lt_t:["在家门口与人和同，没有灾祸。","只在宗族中求同，会有困难。","暗藏兵器，登上高处窥望，三年不能得逞。","登上城墙，却不进攻，吉祥。","先哭后笑，大军能够相遇。","在郊野与人和同，没有悔恨。"]},
+14:{t:"大为亨通。",lt_t:["没有交往的害处，不是灾祸，经历艰难就没有灾祸。","大车满载前往，没有灾祸。","公侯向天子进献，小人做不到。","不盛大铺张，没有灾祸。","诚信交往又威严，吉祥。","得到上天的佑助，吉祥没有不利。"]},
+15:{t:"通达，君子能够有好的结局。",lt_t:["谦虚又谦虚的君子，可以渡过大河，吉祥。","谦虚的名声远扬，守正吉祥。","辛劳而谦虚，君子有好的结局，吉祥。","没有不利，发挥谦虚的美德。","不以邻居为富足，适宜讨伐，没有不利。","谦虚的名声远扬，适宜用兵，讨伐小国。"]},
+16:{t:"有利于建立诸侯，出兵打仗。",lt_t:["自鸣得意，凶险。","操守坚如磐石，不到一天就洞察一切，守正吉祥。","仰望他人而安乐，会有悔恨。迟疑会有悔恨。","欢乐的来源，大有收获。不要怀疑，朋友会聚集如簪。","守正疾病，能够长久不死。","沉溺安乐，已经形成的局面能够改变，没有灾祸。"]},
+17:{t:"大亨通，有利于守正，没有灾祸。",lt_t:["主见有变化，守正吉祥。出门交往有收获。","依附小的，失去大的。","依附大的，失去小的。随从有所求有所得，利于安居守正。","随从虽有所获，守正则凶险。有诚信在正道上，以光明行事，有什么灾祸呢？","诚信追随美好，吉祥。","紧紧捆绑追随，跟随维护。君王在西山祭祀。"]},
+18:{t:"大亨通，有利于渡过大河。在甲日前三天准备，甲日后三天行动。",lt_t:["整顿父亲的弊事，有担当，没有灾祸，经历危险最终吉祥。","整治母亲的弊事，不可以过于强硬。","整治父亲的弊事，虽有小小的悔恨，但没有大灾祸。","姑息父亲的弊事，前往会有困难。","整治父亲的弊事，获得赞誉。","不侍奉王侯，高洁自己的志向。"]},
+19:{t:"大亨通，有利于守正。到了八月会有凶险。",lt_t:["感应而来，守正吉祥。","感应而来，吉祥没有不利。","以甘言蜜语亲临，没有好处。已经忧虑，没有灾祸。","亲自来临，没有灾祸。","以智慧亲临，合乎大君之道，吉祥。","敦厚亲临，吉祥没有灾祸。"]},
+20:{t:"洗净双手而不献祭，心怀诚信令人敬仰。",lt_t:["像儿童一样观看，小人没有灾祸，君子会有困难。","从门缝偷看，利于女子守正。","审视自己的行为，决定进退。","观赏国家的风采，适宜做王的宾客。","审视自己的行为，君子没有灾祸。","审视他人的行为，君子没有灾祸。"]},
+21:{t:"通达。有利于决断案件。",lt_t:["脚戴刑具，足以遮住脚趾，没有灾祸。","割掉鼻子，没有灾祸。","吃腊肉遇到毒，虽有小困难，但没有灾祸。","吃带骨的干肉，得到铜箭头，利于坚守正道，吉祥。","吃干肉，得到黄金，守正虽有危险，但没有灾祸。","戴上枷锁遮住耳朵，凶险。"]},
+22:{t:"通达。小小的前往有利。",lt_t:["修饰脚趾，舍弃车子而步行。","修饰胡须。","文饰润泽，永远守正吉祥。","白色装饰，白马驰来，不是强盗而是求亲。","修饰于丘园，礼物虽薄，虽有困难，最终吉祥。","以素白装饰，没有灾祸。"]},
+23:{t:"不利于有所前往。",lt_t:["剥蚀床腿，正道被毁，凶险。","剥蚀床的框架，正道被毁，凶险。","剥蚀它，没有灾祸。","剥蚀床面，凶险。","像穿鱼一样连贯，以宫人的身份受宠，没有不利。","硕大的果实不被吃掉，君子得到车驾，小人剥蚀房屋。"]},
+24:{t:"通达。出入没有疾病，朋友前来没有灾祸。往返于正道，七天回复。有利于有所前往。",lt_t:["没有走远就返回，没有大的悔恨，大吉。","美好的回归，吉祥。","频繁回归，虽有危险，但没有灾祸。","在中途独自回归。","敦厚回归，没有悔恨。","迷途不返，凶险，有灾祸。用兵打仗，最终大败。"]},
+25:{t:"大亨通有利于守正。不守正道就有灾祸，不利于有所前往。",lt_t:["不妄为，前往吉祥。","不耕而获，不垦荒而熟，就利于有所前往。","无妄的灾祸，有人拴了一头牛，路过的人牵走了，本地人遭殃。","可以守正，没有灾祸。","无妄的疾病，不用吃药就有喜庆。","不要妄为，前行有灾祸，没有好处。"]},
+26:{t:"有利于守正。不在家里吃饭吉利，有利于渡过大河。",lt_t:["有危险，适宜停止。","车子脱落了连接。","良马追逐，利于坚守正道。每日练习车战，有利于有所前往。","给小牛戴上木枷，大吉。","阉猪的牙齿，吉祥。","通达天之大路，亨通。"]},
+27:{t:"守正吉祥。观察颐养之道，自己寻求食物。",lt_t:["放弃灵龟的智慧，看着我鼓动腮帮子，凶险。","颠倒颐养，违背常理，向高处求养，征行凶险。","违背颐养之道，守正凶险，十年不能使用，没有好处。","颠倒颐养吉祥，虎视眈眈，欲望追逐，没有灾祸。","违背常理，安居守正吉祥，不可以渡过大河。","得以颐养，虽有危险但吉祥，有利于渡过大河。"]},
+28:{t:"栋梁弯曲，有利于有所前往，通达。",lt_t:["垫上白茅，没有灾祸。","枯杨生出新芽，老翁得到少女为妻，没有不利。","栋梁弯曲，凶险。","栋梁隆起，吉祥。另有所求就有困难。","枯杨开出新花，老妇得到少夫为伴，没有灾祸也没有赞誉。","涉水灭顶，凶险，没有灾祸。"]},
+29:{t:"重重险阻，有诚信，维系于心则亨通，行为值得赞赏。",lt_t:["重重险阻，陷入深坑，凶险。","险阻中有困难，求小有所得。","来去都是险阻，既险且深，陷入深坑，不要有所作为。","一杯酒两盘饭，用瓦器盛着，从窗户送进简约的食物，最终没有灾祸。","水没有溢出，只与坑坎齐平，没有灾祸。","被绳索捆绑，放在荆棘丛中，三年不能脱困，凶险。"]},
+30:{t:"有利于守正，亨通。蓄养母牛，吉祥。",lt_t:["行走仓促，恭敬对待没有灾祸。","黄色附丽，大吉。","太阳西斜，不敲缶而歌，就有老年的悲叹，凶险。","突然而来，如焚烧、死亡、抛弃。","涕泪纵横，忧叹，吉祥。","王出征讨伐，斩首有功，不杀其余部众，没有灾祸。"]},
+31:{t:"通达，有利于守正，娶妻吉祥。",lt_t:["感应到大拇指。","感应到小腿，凶险，安居吉祥。","感应到大腿，执意跟随，前往有困难。","守正吉祥没有悔恨，心中思念往来，朋友顺从你的想法。","感应到背脊，没有悔恨。","感应到腮颊舌头。"]},
+32:{t:"通达，没有灾祸，有利于守正，有利于有所前往。",lt_t:["过分深入，守正凶险，没有好处。","悔恨消亡。","不恒守其德，有时承受羞辱，守正也有困难。","田猎没有禽兽。","恒守其德，守正，妇人吉祥，男子凶险。","恒久不停，凶险。"]},
+33:{t:"通达，小的有利于守正。",lt_t:["退避落后，危险，不要有所前往。","用黄牛皮革牢固捆绑，没有人能挣脱。","被牵绊退避，有疾病危险，畜养臣妾吉祥。","果断退避，君子吉祥，小人不然。","美好退避，守正吉祥。","从容退避，没有不利。"]},
+34:{t:"有利于守正。",lt_t:["壮在脚趾，出征凶险，有诚信。","守正吉祥。","小人逞强，君子不用，守正也有危险。公羊触藩笆，角被困住。","守正吉祥悔恨消亡，藩笆决开不再被困，壮在大车的輹上。","在原野丧失公羊，没有悔恨。","公羊触藩笆，不能后退也不能前进，没有好处，经历困难则吉祥。"]},
+35:{t:"康侯得到众多车马赏赐，一天被接见三次。",lt_t:["前进遇到阻力，守正吉祥。没有取信于人，宽以待之没有灾祸。","前进遇到忧愁，守正吉祥。承受大福，来自王母。","众人信任，悔恨消亡。","像鼫鼠一样前进，守正也有危险。","悔恨消亡，不必忧虑得失，前往吉祥，没有不利。","用角进攻，讨伐邑国，虽有危险但吉祥没有灾祸，守正也有困难。"]},
+36:{t:"有利于在艰难中守正。",lt_t:["光明受挫，像鸟垂下翅膀。君子出行，三天不吃东西。前往，主人有责备。","左腿受伤，用壮马救援，吉祥。","在南方狩猎，获得敌首领，但不可操之过急。","深入腹地，了解光明受伤的内心，走出家门。","箕子的光明韬晦，有利于守正。","不是光明就是黑暗，先升天后落地。"]},
+37:{t:"有利于女子守正。",lt_t:["防止邪恶，悔恨消亡。","妇人主管家中饮食，守正吉祥。","家人严厉，虽有悔恨危险但吉祥。妇人孩子嬉笑，最终有困难。","家庭富裕，大吉。","君王治理好家庭，不必忧虑，吉祥。","有诚信又有威严，最终吉祥。"]},
+38:{t:"做小事吉利。",lt_t:["悔恨消亡。丢失马匹不要追赶，它自己会回来。见到恶人，没有灾祸。","在小巷遇见主人，没有灾祸。","车子向后拖拽，牛向前牵引，此人受过黥劓之刑，没有好的开始但有好的结局。","孤独乖离，遇到善人，以诚信交往，虽有危险但没有灾祸。","悔恨消亡，同宗前来亲近如皮肤之亲，前往有什么灾祸呢？","孤独乖离，看见猪满身污泥，载着一车鬼怪。先拉开弓，后放下弓，不是强盗而是求婚，前往遇雨则吉祥。"]},
+39:{t:"利于往西南，不利于往东北。有利于拜见贵人，守正吉祥。",lt_t:["前往有困难，返回有荣誉。","王臣历经艰难，不是为了自己。","前往有困难，返回。","前往有困难，返回时连结同伴。","大的困难，朋友前来。","前往有困难，回来大有收获，吉祥，有利于拜见贵人。"]},
+40:{t:"利于往西南。没有地方可去，回来就吉祥。有所前往，早去吉祥。",lt_t:["没有灾祸。","打猎获得三只狐狸，得到黄箭，守正吉祥。","背着东西又乘车，招致盗寇到来，守正也有困难。","解除拇指的束缚，朋友到来就有诚信。","君子得以解脱，吉祥，以诚信感化小人。","在高墙上射鹰，射中获得，没有不利。"]},
+41:{t:"有诚信，大吉，没有灾祸，可以守正，有利于有所前往。用什么祭祀？两碗饭就够了。",lt_t:["办完事赶快前往，没有灾祸，酌量减损。","利于守正，征行凶险，不减损反而增益。","三人同行，则减损一人；一人独行，则得到朋友。","减损疾病，迅速带来喜悦，没有灾祸。","有人增益十朋之龟，不可违抗，大吉。","不减损反而增益，没有灾祸，守正吉祥，有利于有所前往，得到忠臣不限于一家。"]},
+42:{t:"有利于有所前往，有利于渡过大河。",lt_t:["适宜做大事，大吉，没有灾祸。","有人增益十朋之龟，不可违抗，永远守正吉祥。君王祭祀天帝，吉祥。","以凶事来增益，没有灾祸。诚信中道行事，禀告公侯用圭。","中道行事禀告公侯听从，适宜作为迁移国都的依靠。","有诚信施惠之心，不必占问就大吉。有诚信回报我的恩德。","没有人增益，有人攻击，立心不恒久，凶险。"]},
+43:{t:"在王庭上宣布，以诚信号召有危险。告知自己的邑人，不利于动武，有利于有所前往。",lt_t:["壮在脚趾前往，不能取胜就有灾祸。","警惕号召，夜间有兵戎之事，不必忧虑。","壮在颧骨，有凶险。君子果断决断，独行遇雨，虽然被淋湿有些不快，但没有灾祸。","臀部没有皮肤，行走艰难。牵着羊走，悔恨消亡，听到这话却不相信。","像拔苋草一样果断决断，中道行事没有灾祸。","没有号令，最终有凶险。"]},
+44:{t:"女子强壮，不要娶这样的女子。",lt_t:["系在车闸上，守正吉祥。前往，见到凶险，瘦弱的猪急躁不安。","厨房里有鱼，没有灾祸，但不利于宴客。","臀部没有皮肤，行走艰难，有危险，但没有大灾祸。","厨房里没有鱼，有凶险。","用杞树叶包裹瓜果，含蕴美质，有从天而降的福禄。","相遇在角落，虽有困难，但没有灾祸。"]},
+45:{t:"亨通。君王到宗庙，有利于拜见贵人，亨通，利于守正。用大牲畜祭祀吉祥，有利于有所前往。",lt_t:["有诚信不能善终，就会迷乱聚合。振臂一呼，握手言欢，不必忧虑，前往没有灾祸。","引导吉祥，没有灾祸，诚信时可以用简礼祭祀。","聚在一起叹息，没有好处。前往没有灾祸，有小小的困难。","大吉，没有灾祸。","聚集在高位，没有灾祸。不能取信于人，能够始终保持正道，悔恨消亡。","叹息流泪，没有灾祸。"]},
+46:{t:"大亨通，适宜拜见贵人，不必忧虑，南行吉祥。",lt_t:["诚信上升，大吉。","诚信时可以用简礼祭祀，没有灾祸。","升入空虚之城。","君王在岐山祭祀，吉祥，没有灾祸。","守正吉祥，登上台阶。","暗中上升，利于不停止地守正。"]},
+47:{t:"亨通，守正，大人吉祥，没有灾祸。说了别人也不相信。",lt_t:["臀部困在树桩上，陷入幽谷，三年不得相见。","困于酒食之中，红色官服即将到来，利于祭祀，征行凶险，但没有灾祸。","困在坚石上，坐在荆棘上，回到家中见不到妻子，凶险。","缓慢前来，困在金车中，虽有困难，但有好的结局。","割掉鼻子砍掉脚，困于红色官服，缓缓得到解脱，利于祭祀。","困在藤蔓中，危险不安，说动就有悔恨，征行吉祥。"]},
+48:{t:"改变邑地不改变水井，没有损失也没有收获，往来井然有序。水快汲干了还没到井边，打水的瓶子破了，凶险。",lt_t:["井底有泥不能食用，废弃的井边没有禽鸟。","井中射鱼，瓮漏水。","井水清洁没人食用，使我心中悲伤，可以汲水，君王英明同受福泽。","用砖石砌井壁，没有灾祸。","井水清冽，寒泉可饮。","井水汲满不要盖住，有诚信大吉。"]},
+49:{t:"到了己日才有诚信，大亨通利于守正，悔恨消亡。",lt_t:["用黄牛皮革牢固捆绑。","到了己日才变革，征行吉祥，没有灾祸。","征行凶险，守正也有危险。变革的言论得到三次认可，有诚信。","悔恨消亡，有诚信改变天命，吉祥。","大人像虎一样变革，不用占卜就有诚信。","君子像豹一样变化，小人改变面目，征行凶险，安居守正吉祥。"]},
+50:{t:"大吉，亨通。",lt_t:["鼎翻倒，倒出渣滓，利于清除坏东西，纳妾生子，没有灾祸。","鼎中有食物，我的对手有疾病，不能接近我，吉祥。","鼎耳变形，行路受阻，雉鸡膏不得食，待雨落下悔恨消去，最终吉祥。","鼎足折断，食物倾覆，形状狼藉，凶险。","鼎有黄耳金铉，利于守正。","鼎有玉铉，大吉，没有不利。"]},
+51:{t:"亨通。雷声来时恐惧，后来谈笑风生。震惊百里，不丢失祭器。",lt_t:["雷声来时恐惧，后来谈笑风生，吉祥。","雷声来时危险，丧失财物，登上高处，不要追赶，七日可得。","雷声使人惊恐不安，雷声过去就没有灾祸。","雷声坠入泥中。","雷声往来都有危险，但不会丧失，有祭祀之事。","雷声使人恐惧颤抖，目光惊恐，征行凶险。雷不在自己身上而在邻处，没有灾祸。婚姻有非议。"]},
+52:{t:"止于背部，不接触身体，走进庭院看不到人，没有灾祸。",lt_t:["止于脚趾，没有灾祸，利于长久守正。","止于小腿，不能拯救跟随的人，心中不快。","止于腰部，身体僵硬，危险灼心。","止于身体，没有灾祸。","止于口颊，言语有序，悔恨消亡。","敦厚止息，吉祥。"]},
+53:{t:"女子出嫁吉祥，有利于守正。",lt_t:["鸿雁渐进到水边，小人有危险，有非议，但没有灾祸。","鸿雁渐进到磐石上，饮食欢乐，吉祥。","鸿雁渐进到陆地上，丈夫出征不回，妻子怀孕不育，凶险。利于防御。","鸿雁渐进到树木上，或停在树枝上，没有灾祸。","鸿雁渐进到丘陵上，妇人三年不孕，最终没有人能胜过她，吉祥。","鸿雁渐进到高处，羽毛可作为礼仪装饰，吉祥。"]},
+54:{t:"征行凶险，没有好处。",lt_t:["少女作为陪嫁，跛子能走路，征行吉祥。","眼睛不好却能看，利于幽居之人守正。","少女等待，最后以陪嫁身份回去。","少女出嫁延期，迟嫁终有时。","帝乙嫁女，新娘的衣袖不如陪嫁的好。月亮接近圆满，吉祥。","女子捧着空筐，男子杀羊无血，没有好处。"]},
+55:{t:"亨通，君王能够达到，不必忧虑，宜于日在中天。",lt_t:["遇到匹配的对象，十天没有灾祸，前往有嘉奖。","草席遮蔽天空，正午看到北斗星，前往会遭到怀疑猜忌，以诚信感发，吉祥。","帷幕遮蔽，正午看到小星星，折断右臂，没有灾祸。","遮蔽蔽障，正午看到北斗，遇到平等的主人，吉祥。","美善到来，有庆贺赞誉，吉祥。","房屋高大，家室遮蔽门户，寂静无人，三年不能见到，凶险。"]},
+56:{t:"小事亨通，旅行守正吉祥。",lt_t:["琐碎小气，这是招致灾祸的原因。","旅行到客舍，怀揣资财，得到忠仆。","旅途中烧毁客舍，失去仆人，守正也有危险。","旅行在外，得到资财和斧头，心中不快。","射野鸡一箭失去，最终得到荣誉和使命。","鸟巢被烧毁，旅人先笑后大哭。在原野丧失牛，凶险。"]},
+57:{t:"小事亨通，有利于有所前往，有利于拜见贵人。",lt_t:["进退不决，利于武人守正。","谦恭到床下，用史巫祈祷纷纷扰扰，吉祥，没有灾祸。","反复谦恭，有困难。","悔恨消亡，田猎获得三种猎物。","守正吉祥悔恨消亡，没有不利。没有好的开始但有好的结局，在庚日前三天和后三天谋划，吉祥。","谦恭到床下，丧失资财和斧头，守正凶险。"]},
+58:{t:"亨通，有利于守正。",lt_t:["和气欢悦，吉祥。","诚信欢悦，吉祥，悔恨消亡。","前来取悦，凶险。","商量取悦尚未安宁，去除小疾有喜悦。","诚信于剥蚀之事，有危险。","引导欢悦。"]},
+59:{t:"亨通。君王到宗庙，有利于渡过大河，利于守正。",lt_t:["用壮马救援，吉祥。","涣散奔向机案，悔恨消亡。","涣散自身，没有悔恨。","涣散其同党，大吉。涣散聚成山丘，不是常人所能想到的。","涣散如汗发出大号令，涣散王的居所，没有灾祸。","涣散其血腥与忧惧，远离危险，没有灾祸。"]},
+60:{t:"亨通。苦涩的节制不可守正。",lt_t:["不出家门院落，没有灾祸。","不出大门庭院，凶险。","不知节制，就会叹息，没有灾祸。","安于节制，亨通。","甘美节制，吉祥，前往有嘉奖。","苦涩节制，守正凶险，悔恨消亡。"]},
+61:{t:"小猪和鱼吉祥，有利于渡过大河，利于守正。",lt_t:["安虞吉祥，另有所求就不安。","鹤鸣在树荫中，小鹤应和。我有好酒，与你共饮。","遇到对手，或擂鼓或罢歌，或哭泣或歌唱。","月亮接近圆满，失去马匹，没有灾祸。","有诚信紧密相连，没有灾祸。","鸡鸣声登天，守正凶险。"]},
+62:{t:"亨通，利于守正。可以做小事，不可做大事。飞鸟留下鸣叫的声音，不宜向上飞，宜向下飞，大吉。",lt_t:["飞鸟向前飞有凶险。","越过祖父遇到祖母；没有赶上国君遇到臣子，没有灾祸。","不去预防，放任或加害，凶险。","没有灾祸，不越过而遇到。前往有危险必须戒备，不可永远守正。","密云不雨，从西郊方向来，用绳系箭射取穴中之鸟。","不相遇而越过，像飞鸟远离，凶险，这就是所谓的灾祸。"]},
+63:{t:"小事亨通，利于守正。开始吉祥最终混乱。",lt_t:["拖着车轮，弄湿尾巴，没有灾祸。","妇人丢失车帘，不要追赶，七日可得。","高宗讨伐鬼方，三年才战胜，小人不可用。","虽穿破衣仍戒备终日。","东邻杀牛，不如西邻用薄祭，实实在在享受福泽。","弄湿头部，有危险。"]},
+64:{t:"亨通。小狐狸快要渡河，弄湿了尾巴，没有好处。",lt_t:["弄湿尾巴，有困难。","拖着车轮，守正吉祥。","尚未渡河，征行凶险，利于渡过大河。","守正吉祥，悔恨消亡。奋力征伐鬼方，三年受到大国嘉奖。","守正吉祥，没有悔恨。君子的光辉，有诚信，吉祥。","有诚信地饮酒，没有灾祸。弄湿头部，有诚信也失去了。"]}
+};
+
+</script>
+<script>
+/* 太极解卦 · 前端逻辑（起卦、解卦、渲染） */
+(function () {
+    "use strict";
+
+    var TAIJI_SVG = '<svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">' +
+        '<circle cx="128" cy="128" r="118" fill="#ffffff" stroke="#3c3c3c" stroke-width="3"/>' +
+        '<path d="M128 10 A118 118 0 0 1 128 246 Z" fill="#000000"/>' +
+        '<circle cx="128" cy="69" r="59" fill="#ffffff"/>' +
+        '<circle cx="128" cy="187" r="59" fill="#000000"/>' +
+        '<circle cx="128" cy="69" r="19" fill="#000000"/>' +
+        '<circle cx="128" cy="187" r="19" fill="#ffffff"/></svg>';
+
+    var HEX = window.HEXAGRAMS || [];
+    var byPattern = {};
+    HEX.forEach(function (h) {
+        byPattern[h.lines.join("")] = h;
+    });
+
+    var FORTUNE_CLASS = { "大吉": "big", "吉": "good", "中平": "mid", "凶": "bad", "大凶": "worst" };
+    var FORTUNE_STARS = { "大吉": "★★★★★", "吉": "★★★★", "中平": "★★★", "凶": "★★", "大凶": "★" };
+
+    var TRIGRAM_NAMES = ["乾", "兑", "离", "震", "巽", "坎", "艮", "坤"];
+    function trigramName(n) { return TRIGRAM_NAMES[((n - 1) % 8 + 8) % 8]; }
+    var YAO_NAMES = ["初", "二", "三", "四", "五", "上"];
+
+    var WUXING = { "乾": "金", "兑": "金", "离": "火", "震": "木", "巽": "木", "坎": "水", "艮": "土", "坤": "土" };
+    var WUXING_COLOR = { "金": "#b8860b", "火": "#e53935", "木": "#2e7d32", "水": "#1565c0", "土": "#8d6e63" };
+    var SHENG = { "木": "火", "火": "土", "土": "金", "金": "水", "水": "木" };
+    var KE = { "木": "土", "土": "水", "水": "火", "火": "金", "金": "木" };
+    var WANG_STATE = {
+        "木": { "春": "旺", "夏": "相", "四季": "休", "秋": "囚", "冬": "死" },
+        "火": { "春": "休", "夏": "旺", "四季": "相", "秋": "囚", "冬": "死" },
+        "土": { "春": "死", "夏": "休", "四季": "旺", "秋": "相", "冬": "囚" },
+        "金": { "春": "囚", "夏": "死", "四季": "休", "秋": "旺", "冬": "相" },
+        "水": { "春": "相", "夏": "囚", "四季": "死", "秋": "休", "冬": "旺" }
+    };
+    function getWuxingSeason(solarMonth) {
+        if (solarMonth >= 2 && solarMonth <= 4) return "春";
+        if (solarMonth >= 5 && solarMonth <= 7) return "夏";
+        if (solarMonth >= 8 && solarMonth <= 10) return "秋";
+        if (solarMonth === 11 || solarMonth === 0 || solarMonth === 1) return "冬";
+        return "四季";
+    }
+    function getWangState(wx, season) {
+        return (WANG_STATE[wx] && WANG_STATE[wx][season]) || "平";
+    }
+    function isWang(wx, season) {
+        var s = getWangState(wx, season);
+        return s === "旺" || s === "相";
+    }
+    function wuxingRelation(a, b) {
+        if (a === b) return "比和";
+        if (SHENG[a] === b) return "体生用泄";
+        if (SHENG[b] === a) return "用生体得助";
+        if (KE[a] === b) return "体克用";
+        if (KE[b] === a) return "用克体";
+        return "";
+    }
+    function detectCategory(text) {
+        var t = String(text || "");
+        if (/病|疾|痛|医|药|手术|住院|身体|健康/.test(t)) return "疾病";
+        if (/财|钱|股|投资|生意|买卖|收入|工资|理财|赚/.test(t)) return "财运";
+        if (/官|讼|诉|仲裁|打官司|报警|被抓|判/.test(t)) return "官讼";
+        if (/婚|恋|爱|对象|感情|分手|复合|嫁|娶|桃花/.test(t)) return "婚恋";
+        if (/工|事业|升职|面试|跳槽|领导|同事|项目|创业/.test(t)) return "事业";
+        if (/考|试|面试|笔试|面试|录取/.test(t)) return "考试";
+        if (/出|行|远行|旅途|出差|搬家/.test(t)) return "出行";
+        return "综合";
+    }
+    function categoryAdvice(cat, bodyWx, useWx, bodyWang, useWang, rel) {
+        var advice = "";
+        if (cat === "疾病") {
+            advice = "体为病人，用为病邪。";
+            if (rel === "用生体得助") advice += "用生体，外部补益，有利于康复。";
+            else if (rel === "体生用泄") advice += "体生用，精力外泄，最忌，主病情扩散。";
+            else if (rel === "体克用") advice += "体克用，可压制病邪，但需看旺衰。";
+            else if (rel === "用克体") advice += "用克体，病邪压制身体，须防加重。";
+            else advice += "体用比和，平稳之象，注意调养。";
+        } else if (cat === "财运") {
+            advice = "体为自身，用为财物。";
+            if (rel === "体克用") advice += "体克用，主动求财，辛苦但可得。";
+            else if (rel === "用生体得助") advice += "用生体，财来找我，求之易得。";
+            else if (rel === "体生用泄") advice += "体生用，财去难回，付出多回报少。";
+            else if (rel === "用克体") advice += "用克体，财不可求，反有破财之虞。";
+            else advice += "体用比和，财源平稳。";
+        } else if (cat === "官讼") {
+            advice = "体为己方，用为对方。";
+            if (rel === "体克用") advice += "体克用，我方占优，主胜诉。";
+            else if (rel === "用克体") advice += "用克体，对方占优，主败诉，且防刑罚。";
+            else if (rel === "用生体得助") advice += "用生体，对方示好，可和解。";
+            else if (rel === "体生用泄") advice += "体生用，我方让步，有损失。";
+            else advice += "体用比和，和解为宜。";
+        } else if (cat === "婚恋") {
+            advice = "体为己方，用为对方。";
+            if (rel === "用生体得助") advice += "用生体，对方有意，感情主动。";
+            else if (rel === "体生用泄") advice += "体生用，我方付出多，宜审慎。";
+            else if (rel === "体克用") advice += "体克用，我方可主导关系。";
+            else if (rel === "用克体") advice += "用克体，对方压制，感情不平等。";
+            else advice += "体用比和，情投意合。";
+        } else if (cat === "事业") {
+            advice = "体为自身，用为事业环境。";
+            if (rel === "用生体得助") advice += "用生体，贵人扶持，事半功倍。";
+            else if (rel === "体克用") advice += "体克用，可驾驭全局，虽劳有成。";
+            else if (rel === "体生用泄") advice += "体生用，付出多回报少，需防消耗。";
+            else if (rel === "用克体") advice += "用克体，环境压制，宜守不宜进。";
+            else advice += "体用比和，顺风顺水。";
+        } else {
+            advice = "体为主，用为事。";
+            if (rel === "用生体得助") advice += "外部助力，事易成。";
+            else if (rel === "体生用泄") advice += "自身消耗，付出多回报少。";
+            else if (rel === "体克用") advice += "主动权在我，事可成但费力。";
+            else if (rel === "用克体") advice += "外界压制，灾祸临头。";
+            else advice += "内外同心，事半功倍。";
+        }
+        return advice;
+    }
+
+    function analyzeTiyong(ben, bian, lines, question, solarDate) {
+        var movingIdx = [];
+        for (var i = 0; i < 6; i++) {
+            if (lines[i] === 9 || lines[i] === 6) movingIdx.push(i);
+        }
+        var numMoving = movingIdx.length;
+        var bodyName, useName;
+        if (numMoving === 0) {
+            bodyName = ben.low;
+            useName = ben.up;
+        } else {
+            var hasUpperMoving = movingIdx.some(function (i) { return i >= 3; });
+            var hasLowerMoving = movingIdx.some(function (i) { return i < 3; });
+            if (hasUpperMoving && hasLowerMoving) {
+                bodyName = null;
+                useName = null;
+            } else if (hasUpperMoving) {
+                bodyName = ben.low;
+                useName = ben.up;
+            } else {
+                bodyName = ben.up;
+                useName = ben.low;
+            }
+        }
+        var season = solarDate ? getWuxingSeason(solarDate.getMonth()) : "春";
+        var seasonName = { "春": "春（木旺）", "夏": "夏（火旺）", "秋": "秋（金旺）", "冬": "冬（水旺）", "四季": "四季（土旺）" }[season] || season;
+        var cat = detectCategory(question);
+        var lines_text = "";
+        var detail_text = "";
+        var outcome_text = "";
+        if (!bodyName || !useName) {
+            lines_text = "上下卦均有动爻，体用难分，以卦象综合论之。";
+            detail_text = "此卦上下卦皆有动爻，体用不分明，不宜以生克定论，宜综合卦象、爻辞、卦辞整体判断。";
+        } else {
+            var bodyWx = WUXING[bodyName];
+            var useWx = WUXING[useName];
+            var bodyWang = getWangState(bodyWx, season);
+            var useWang = getWangState(useWx, season);
+            var bodyIsWang = isWang(bodyWx, season);
+            var useIsWang = isWang(useWx, season);
+            var rel = wuxingRelation(bodyWx, useWx);
+            lines_text = "体卦：" + bodyName + "（" + bodyWx + "·" + bodyWang + "）　用卦：" + useName + "（" + useWx + "·" + useWang + "）\n" +
+                "月令：" + seasonName + "　" + "关系：" + rel;
+            if (rel === "比和") {
+                if (bodyIsWang && useIsWang) {
+                    detail_text = "⚖️ 体用比和，皆旺，大吉之象。内外同心，事半功倍，无论问何事皆主顺利得助。";
+                } else if (!bodyIsWang && !useIsWang) {
+                    detail_text = "⚖️ 体用比和，但皆衰，虽同心却力不足。小事可成，大事难济。";
+                } else {
+                    detail_text = "⚖️ 体用比和，一旺一衰，吉中有限。旺者得力，衰者拖累。";
+                }
+            } else if (rel === "用生体得助") {
+                if (bodyIsWang) {
+                    detail_text = "⬆️ 用生体，体旺能受，外部助力充沛，事易成。得贵人相助，诸事顺遂。";
+                } else if (bodyWang === "休") {
+                    detail_text = "⬆️ 用生体，体休虽弱尚可受生，有助力但需自强。";
+                } else {
+                    detail_text = "⬆️ 用生体，但体太弱「虚不受补」，虽有助力反觉压力。需先固本培元。";
+                }
+            } else if (rel === "体生用泄") {
+                if (bodyIsWang) {
+                    detail_text = "⬇️ 体生用，体旺泄为「才华施展」，虽有消耗但可承受。如文人创作，有利有弊。";
+                } else if (bodyWang === "休") {
+                    detail_text = "⬇️ 体生用，体衰泄气，元气渐伤。付出多回报少，需防破财耗神。";
+                } else {
+                    detail_text = "⬇️ 体生用，体衰极而泄，「元气大伤」。如重病出血，大凶之兆。";
+                }
+            } else if (rel === "体克用") {
+                if (bodyIsWang) {
+                    detail_text = "⚔️ 体克用，体旺能克，主动权在我。虽劳碌但能驾驭全局，事可成。";
+                } else if (bodyWang === "休") {
+                    detail_text = "⚔️ 体克用，体休力弱，「克不住」对方。虽想掌控但力不从心，凶多吉少。";
+                } else {
+                    detail_text = "⚔️ 体克用，体衰用旺，「自身受损，克不住对方」。如秋金克旺火，反受其害。大凶。";
+                }
+            } else if (rel === "用克体") {
+                if (bodyIsWang) {
+                    detail_text = "💥 用克体，但体旺能挡，「虽有惊扰，终无大碍」。如旺金遇衰火，反吉。";
+                } else if (bodyWang === "休") {
+                    detail_text = "💥 用克体，体衰难挡，灾祸临头。宜守不宜进，防外力侵害。";
+                } else {
+                    detail_text = "💥 用克体，体衰极而受克，「大难临头，身不由己」。须格外小心。";
+                }
+            }
+            var catAdvice = categoryAdvice(cat, bodyWx, useWx, bodyWang, useWang, rel);
+            detail_text += "\n【" + cat + "断】" + catAdvice;
+            if (bian) {
+                var bianUpWx = WUXING[bian.up] || "";
+                var bianLowWx = WUXING[bian.low] || "";
+                var bianBodyWx, bianUseWx;
+                if (numMoving === 0) {
+                    bianBodyWx = bianLowWx;
+                    bianUseWx = bianUpWx;
+                } else {
+                    var hasUpperMoving = movingIdx.some(function (i) { return i >= 3; });
+                    var hasLowerMoving = movingIdx.some(function (i) { return i < 3; });
+                    if (hasUpperMoving && hasLowerMoving) {
+                        bianBodyWx = null;
+                        bianUseWx = null;
+                    } else if (hasUpperMoving) {
+                        bianBodyWx = bianLowWx;
+                        bianUseWx = bianUpWx;
+                    } else {
+                        bianBodyWx = bianUpWx;
+                        bianUseWx = bianLowWx;
+                    }
+                }
+                if (bianBodyWx && bianUseWx) {
+                    var bianRel = wuxingRelation(bianBodyWx, bianUseWx);
+                    var outcomeLabel = { "比和": "平稳", "用生体得助": "先凶后吉", "体生用泄": "先吉后凶", "体克用": "终可掌控", "用克体": "终受压制" }[bianRel] || "";
+                    outcome_text = "变卦（结局）：" + bian.name + "　体用：" + bianRel;
+                    if (outcomeLabel) outcome_text += "　" + outcomeLabel;
+                    if (bianRel === "用生体得助") {
+                        outcome_text += "\n变卦化用生体，「柳暗花明」，结局有转机。";
+                    } else if (bianRel === "体生用泄") {
+                        outcome_text += "\n变卦化体生用，「好景不长」，见好就收为宜。";
+                    } else if (bianRel === "用克体") {
+                        outcome_text += "\n变卦化用克体，结局不利，需防变故。";
+                    } else if (bianRel === "体克用") {
+                        outcome_text += "\n变卦化体克用，终可掌控局面。";
+                    } else if (bianRel === "比和") {
+                        outcome_text += "\n变卦比和，结局平稳。";
+                    }
+                }
+            }
+            if (window.HEXAGRAMS) {
+                var huLines = [lines[1], lines[2], lines[3], lines[3], lines[4], lines[5]];
+                var huStable = stableLines(huLines);
+                var hu = byLines(huStable);
+                if (hu && bodyName) {
+                    var huUpWx = WUXING[hu.up] || "";
+                    var huLowWx = WUXING[hu.low] || "";
+                    var huRelBody = wuxingRelation(bodyWx, huUpWx);
+                    var huRelBody2 = wuxingRelation(bodyWx, huLowWx);
+                    var processNote = "";
+                    if (huRelBody === "用克体" || huRelBody2 === "用克体") {
+                        processNote = "互卦克体，过程有阻碍或小人作梗。";
+                    } else if (huRelBody === "用生体得助" || huRelBody2 === "用生体得助") {
+                        processNote = "互卦生体，过程有助力。";
+                    }
+                    if (processNote) {
+                        outcome_text += "\n互卦（过程）：" + hu.name + "　" + processNote;
+                    }
+                }
+            }
+        }
+        var yao_text = "";
+        if (numMoving === 1) {
+            var idx = movingIdx[0];
+            var yaoName = YAO_NAMES[idx] + "爻";
+            var lineText = (ben.lt && ben.lt[idx]) ? ben.lt[idx] : "";
+            yao_text = "一爻动，看本动爻：" + yaoName + "　" + lineText;
+            var bhData = (window.HEXAGRAMS_BAIHUA && HEXAGRAMS_BAIHUA[ben.n]) ? HEXAGRAMS_BAIHUA[ben.n] : null;
+            if (bhData && bhData.lt_t && bhData.lt_t[idx]) {
+                yao_text += "\n白话：" + bhData.lt_t[idx];
+            }
+        } else if (numMoving === 2) {
+            var upper = movingIdx.filter(function (i) { return i >= 3; });
+            var lower = movingIdx.filter(function (i) { return i < 3; });
+            var mainIdx = upper.length > 0 ? upper[0] : movingIdx[1];
+            var auxIdx = upper.length > 0 ? (lower[0] !== undefined ? lower[0] : movingIdx[0]) : movingIdx[0];
+            var mainText = (ben.lt && ben.lt[mainIdx]) ? ben.lt[mainIdx] : "";
+            var auxText = (ben.lt && ben.lt[auxIdx]) ? ben.lt[auxIdx] : "";
+            yao_text = "二爻动，主看" + YAO_NAMES[mainIdx] + "爻：" + mainText + "\n辅看" + YAO_NAMES[auxIdx] + "爻：" + auxText;
+        } else if (numMoving === 3) {
+            yao_text = "三爻动，看本卦卦辞：" + ben.j;
+        } else if (numMoving === 4) {
+            var stayingLow = [];
+            for (var i = 0; i < 3; i++) {
+                var sv = lines[i];
+                if (sv !== 9 && sv !== 6) stayingLow.push(i);
+            }
+            if (stayingLow.length > 0) {
+                var parts = stayingLow.map(function (i) {
+                    var t = (ben.lt && ben.lt[i]) ? ben.lt[i] : "";
+                    return YAO_NAMES[i] + "爻：" + t;
+                });
+                yao_text = "四爻动，看变卦下卦不动两爻：\n" + parts.join("\n");
+            } else {
+                yao_text = "四爻动，看变卦卦辞：" + (bian ? bian.j : "");
+            }
+        } else if (numMoving === 5) {
+            var stayingAll = [];
+            for (var i = 0; i < 6; i++) {
+                var sv = lines[i];
+                if (sv !== 9 && sv !== 6) stayingAll.push(i);
+            }
+            if (stayingAll.length > 0) {
+                var parts = stayingAll.map(function (i) {
+                    var t = (ben.lt && ben.lt[i]) ? ben.lt[i] : "";
+                    return YAO_NAMES[i] + "爻：" + t;
+                });
+                yao_text = "五爻动，看变卦不动爻：\n" + parts.join("\n");
+            } else {
+                yao_text = "五爻动，看变卦卦辞：" + (bian ? bian.j : "");
+            }
+        } else if (numMoving === 6) {
+            var hasNine = lines.some(function (v) { return v === 9; });
+            if (hasNine) {
+                yao_text = "六爻皆动（全老阳），看用九：" + (ben.up === "乾" ? "见群龙无首，吉。" : "");
+            } else {
+                yao_text = "六爻皆动（全老阴），看用六：" + (ben.up === "坤" ? "利永贞。" : "");
+            }
+        } else {
+            yao_text = "无动爻，看变卦卦辞：" + (bian ? bian.j : "");
+        }
+        return { lines_text: lines_text, detail_text: detail_text, outcome_text: outcome_text, yao_text: yao_text, bodyName: bodyName, useName: useName, numMoving: numMoving, season: season, category: cat };
+    }
+
+    var $ = function (id) { return document.getElementById(id); };
+    var questionEl = $("question"), statusEl = $("status"), coinsEl = $("coins");
+    var resultEl = $("result"), historyBox = $("history");
+    var historyList = [];
+    var running = false;
+
+    var PROVINCE_DB = [
+        { name: "北京", cities: [["东城区", 116.4], ["西城区", 116.4], ["朝阳区", 116.5], ["丰台区", 116.3], ["石景山区", 116.2], ["海淀区", 116.3], ["门头沟区", 116.1], ["房山区", 116.0], ["通州区", 116.7], ["顺义区", 116.7], ["昌平区", 116.2], ["大兴区", 116.3], ["怀柔区", 116.6], ["平谷区", 117.1], ["密云区", 117.3], ["延庆区", 116.0]] },
+        { name: "天津", cities: [["和平区", 117.2], ["河东区", 117.2], ["河西区", 117.2], ["南开区", 117.1], ["河北区", 117.2], ["红桥区", 117.1], ["东丽区", 117.3], ["西青区", 117.0], ["津南区", 117.3], ["北辰区", 117.1], ["武清区", 117.0], ["宝坻区", 117.3], ["滨海新区", 117.5], ["宁河区", 117.8], ["静海区", 116.9], ["蓟州区", 117.4]] },
+        { name: "上海", cities: [["黄浦区", 121.5], ["徐汇区", 121.4], ["长宁区", 121.4], ["静安区", 121.5], ["普陀区", 121.4], ["虹口区", 121.5], ["杨浦区", 121.5], ["闵行区", 121.4], ["宝山区", 121.5], ["嘉定区", 121.3], ["浦东新区", 121.5], ["金山区", 121.3], ["松江区", 121.2], ["青浦区", 121.1], ["奉贤区", 121.5], ["崇明区", 121.4]] },
+        { name: "重庆", cities: [["万州区", 108.4], ["涪陵区", 107.4], ["渝中区", 106.6], ["大渡口区", 106.5], ["江北区", 106.6], ["沙坪坝区", 106.5], ["九龙坡区", 106.5], ["南岸区", 106.6], ["北碚区", 106.4], ["渝北区", 106.6], ["巴南区", 106.5], ["长寿区", 107.1], ["江津区", 106.3], ["合川区", 106.3], ["永川区", 105.9], ["南川区", 107.1], ["璧山区", 106.2], ["铜梁区", 106.1], ["潼南区", 105.8], ["荣昌区", 105.6], ["开州区", 108.4], ["梁平区", 107.8], ["武隆区", 107.8]] },
+        { name: "河北", cities: [["石家庄", 114.5], ["唐山", 118.2], ["秦皇岛", 119.5], ["邯郸", 114.5], ["邢台", 114.5], ["保定", 115.5], ["张家口", 114.9], ["承德", 117.9], ["沧州", 116.9], ["廊坊", 116.7], ["衡水", 115.7]] },
+        { name: "山西", cities: [["太原", 112.5], ["大同", 113.3], ["阳泉", 113.6], ["长治", 113.1], ["晋城", 112.9], ["朔州", 112.4], ["晋中", 112.7], ["运城", 111.0], ["忻州", 112.7], ["临汾", 111.5], ["吕梁", 111.1]] },
+        { name: "内蒙古", cities: [["呼和浩特", 111.7], ["包头", 109.8], ["乌海", 106.8], ["赤峰", 118.9], ["通辽", 122.3], ["鄂尔多斯", 109.8], ["呼伦贝尔", 119.8], ["巴彦淖尔", 107.4], ["乌兰察布", 113.1]] },
+        { name: "辽宁", cities: [["沈阳", 123.4], ["大连", 121.6], ["鞍山", 123.0], ["抚顺", 123.9], ["本溪", 123.8], ["丹东", 124.4], ["锦州", 121.1], ["营口", 122.2], ["阜新", 121.7], ["辽阳", 123.2], ["盘锦", 122.1], ["铁岭", 123.9], ["朝阳", 120.5], ["葫芦岛", 120.8]] },
+        { name: "吉林", cities: [["长春", 125.3], ["吉林", 126.5], ["四平", 124.4], ["辽源", 125.1], ["通化", 125.9], ["白山", 126.4], ["松原", 124.8], ["白城", 122.8], ["延边", 129.5]] },
+        { name: "黑龙江", cities: [["哈尔滨", 126.6], ["齐齐哈尔", 124.0], ["鸡西", 130.9], ["鹤岗", 130.3], ["双鸭山", 131.2], ["大庆", 125.0], ["伊春", 128.9], ["佳木斯", 130.4], ["七台河", 130.8], ["牡丹江", 129.6], ["黑河", 127.5], ["绥化", 126.9], ["大兴安岭", 124.1]] },
+        { name: "江苏", cities: [["南京", 118.8], ["无锡", 120.3], ["徐州", 117.2], ["常州", 119.9], ["苏州", 120.6], ["南通", 120.9], ["连云港", 119.2], ["淮安", 119.0], ["盐城", 120.2], ["扬州", 119.4], ["镇江", 119.5], ["泰州", 119.9], ["宿迁", 118.3]] },
+        { name: "浙江", cities: [["杭州", 120.2], ["宁波", 121.6], ["温州", 120.7], ["嘉兴", 120.8], ["湖州", 120.1], ["绍兴", 120.6], ["金华", 119.6], ["衢州", 118.9], ["舟山", 122.1], ["台州", 121.4], ["丽水", 119.9]] },
+        { name: "安徽", cities: [["合肥", 117.3], ["芜湖", 118.4], ["蚌埠", 117.4], ["淮南", 117.0], ["马鞍山", 118.5], ["淮北", 116.8], ["铜陵", 117.8], ["安庆", 117.0], ["黄山", 118.3], ["滁州", 118.3], ["阜阳", 115.8], ["宿州", 116.9], ["六安", 116.5], ["亳州", 115.8], ["池州", 117.5], ["宣城", 118.8]] },
+        { name: "福建", cities: [["福州", 119.3], ["厦门", 118.1], ["莆田", 119.0], ["三明", 117.6], ["泉州", 118.6], ["漳州", 117.6], ["南平", 118.2], ["龙岩", 117.0], ["宁德", 119.5]] },
+        { name: "江西", cities: [["南昌", 115.9], ["景德镇", 117.2], ["萍乡", 113.9], ["九江", 116.0], ["新余", 114.9], ["鹰潭", 117.1], ["赣州", 114.9], ["吉安", 115.0], ["宜春", 114.4], ["抚州", 116.4], ["上饶", 117.9]] },
+        { name: "山东", cities: [["济南", 117.0], ["青岛", 120.4], ["淄博", 118.1], ["枣庄", 117.3], ["东营", 118.7], ["烟台", 121.4], ["潍坊", 119.1], ["济宁", 116.6], ["泰安", 117.1], ["威海", 122.1], ["日照", 119.5], ["临沂", 118.3], ["德州", 116.4], ["聊城", 115.9], ["滨州", 118.0], ["菏泽", 115.5]] },
+        { name: "河南", cities: [["郑州", 113.7], ["开封", 114.3], ["洛阳", 112.5], ["平顶山", 113.2], ["安阳", 114.4], ["鹤壁", 114.3], ["新乡", 113.9], ["焦作", 113.2], ["濮阳", 115.0], ["许昌", 113.9], ["漯河", 114.0], ["三门峡", 111.2], ["南阳", 112.5], ["商丘", 115.7], ["信阳", 114.1], ["周口", 114.7], ["驻马店", 114.0], ["济源", 112.6]] },
+        { name: "湖北", cities: [["武汉", 114.3], ["黄石", 115.0], ["十堰", 110.8], ["宜昌", 111.3], ["襄阳", 112.1], ["鄂州", 114.9], ["荆门", 112.2], ["孝感", 113.9], ["荆州", 112.2], ["黄冈", 114.9], ["咸宁", 114.3], ["随州", 113.4], ["恩施", 109.5]] },
+        { name: "湖南", cities: [["长沙", 113.0], ["株洲", 113.1], ["湘潭", 112.9], ["衡阳", 112.6], ["邵阳", 111.5], ["岳阳", 113.1], ["常德", 111.7], ["张家界", 110.5], ["益阳", 112.4], ["郴州", 113.0], ["永州", 111.6], ["怀化", 110.0], ["娄底", 112.0], ["湘西", 109.7]] },
+        { name: "广东", cities: [["广州", 113.3], ["韶关", 113.6], ["深圳", 114.1], ["珠海", 113.6], ["汕头", 116.7], ["佛山", 113.1], ["江门", 113.1], ["湛江", 110.4], ["茂名", 110.9], ["肇庆", 112.5], ["惠州", 114.4], ["梅州", 116.1], ["汕尾", 115.4], ["河源", 114.7], ["阳江", 111.9], ["清远", 113.1], ["东莞", 113.8], ["中山", 113.4], ["潮州", 116.6], ["揭阳", 116.4], ["云浮", 112.0]] },
+        { name: "广西", cities: [["南宁", 108.3], ["柳州", 109.4], ["桂林", 110.3], ["梧州", 111.3], ["北海", 109.1], ["防城港", 108.3], ["钦州", 108.6], ["贵港", 109.6], ["玉林", 110.2], ["百色", 106.6], ["贺州", 111.6], ["河池", 108.1], ["来宾", 109.2], ["崇左", 107.4]] },
+        { name: "海南", cities: [["海口", 110.3], ["三亚", 109.5], ["三沙", 112.3], ["儋州", 109.6]] },
+        { name: "四川", cities: [["成都", 104.1], ["自贡", 104.8], ["攀枝花", 101.7], ["泸州", 105.4], ["德阳", 104.4], ["绵阳", 104.7], ["广元", 105.8], ["遂宁", 105.6], ["内江", 105.1], ["乐山", 103.8], ["南充", 106.1], ["眉山", 103.8], ["宜宾", 104.6], ["广安", 106.6], ["达州", 107.5], ["雅安", 103.0], ["巴中", 106.7], ["资阳", 104.6], ["阿坝", 102.2], ["甘孜", 101.9], ["凉山", 102.2]] },
+        { name: "贵州", cities: [["贵阳", 106.7], ["六盘水", 104.8], ["遵义", 106.9], ["安顺", 105.9], ["毕节", 105.3], ["铜仁", 109.2], ["黔西南", 104.9], ["黔东南", 107.9], ["黔南", 107.5]] },
+        { name: "云南", cities: [["昆明", 102.7], ["曲靖", 103.8], ["玉溪", 102.5], ["保山", 99.2], ["昭通", 103.7], ["丽江", 100.2], ["普洱", 101.0], ["临沧", 100.1], ["楚雄", 101.5], ["红河", 103.4], ["文山", 104.2], ["西双版纳", 100.8], ["大理", 100.2], ["德宏", 98.6], ["怒江", 98.8], ["迪庆", 99.7]] },
+        { name: "西藏", cities: [["拉萨", 91.1], ["日喀则", 88.9], ["昌都", 97.2], ["林芝", 97.3], ["山南", 91.7], ["那曲", 92.1], ["阿里", 80.1]] },
+        { name: "陕西", cities: [["西安", 108.9], ["铜川", 108.9], ["宝鸡", 107.1], ["咸阳", 108.7], ["渭南", 109.5], ["延安", 109.5], ["汉中", 107.0], ["榆林", 109.7], ["安康", 109.0], ["商洛", 109.9]] },
+        { name: "甘肃", cities: [["兰州", 103.8], ["嘉峪关", 98.3], ["金昌", 102.2], ["白银", 104.1], ["天水", 105.7], ["武威", 102.6], ["张掖", 100.5], ["平凉", 106.7], ["酒泉", 98.5], ["庆阳", 107.6], ["定西", 104.6], ["陇南", 104.9], ["临夏", 103.2], ["甘南", 102.9]] },
+        { name: "青海", cities: [["西宁", 101.8], ["海东", 102.1], ["海北", 100.9], ["黄南", 102.0], ["海南州", 100.6], ["果洛", 100.2], ["玉树", 97.0], ["海西", 97.4]] },
+        { name: "宁夏", cities: [["银川", 106.3], ["石嘴山", 106.4], ["吴忠", 106.2], ["固原", 106.2], ["中卫", 105.2]] },
+        { name: "新疆", cities: [["乌鲁木齐", 87.6], ["克拉玛依", 84.9], ["吐鲁番", 89.2], ["哈密", 93.5], ["昌吉", 87.3], ["博尔塔拉", 82.1], ["巴音郭楞", 86.1], ["阿克苏", 80.3], ["克孜勒苏", 76.2], ["喀什", 75.9], ["和田", 79.9], ["伊犁", 81.3], ["塔城", 82.9], ["阿勒泰", 88.1], ["石河子", 86.0]] },
+        { name: "香港", cities: [["香港", 114.2]] },
+        { name: "澳门", cities: [["澳门", 113.5]] },
+        { name: "台湾", cities: [["台北", 121.5], ["高雄", 120.3], ["台中", 120.7], ["台南", 120.2], ["桃园", 121.3], ["新竹", 120.9], ["基隆", 121.7], ["嘉义", 120.4], ["屏东", 120.5], ["宜兰", 121.8], ["花莲", 121.6], ["台东", 121.1], ["澎湖", 119.6]] }
+    ];
+    var BEIJING_LNG = 120;
+    var provinceSelectEl = null, citySelectEl = null;
+
+    function getSelectedCity() {
+        if (citySelectEl && citySelectEl.value) {
+            var idx = parseInt(citySelectEl.value, 10);
+            var pIdx = provinceSelectEl ? parseInt(provinceSelectEl.value, 10) : 0;
+            if (PROVINCE_DB[pIdx] && PROVINCE_DB[pIdx].cities[idx]) {
+                return PROVINCE_DB[pIdx].cities[idx];
+            }
+        }
+        return ["北京时间", BEIJING_LNG];
+    }
+
+    function getSolarTime(date) {
+        var city = getSelectedCity();
+        var lng = city[1];
+        var utcMs = date.getTime() + date.getTimezoneOffset() * 60000;
+        var solarMs = utcMs + (lng / 15) * 3600000;
+        return new Date(solarMs);
+    }
+
+    function getHourBranchFromSolar(solarDate) {
+        var h = solarDate.getHours();
+        return Math.floor(((h + 1) % 24) / 2);
+    }
+
+    function populateCityList(pIdx) {
+        if (!citySelectEl) return;
+        citySelectEl.innerHTML = "";
+        var cities = PROVINCE_DB[pIdx] ? PROVINCE_DB[pIdx].cities : [];
+        for (var i = 0; i < cities.length; i++) {
+            var opt = document.createElement("option");
+            opt.value = i;
+            opt.textContent = cities[i][0];
+            citySelectEl.appendChild(opt);
+        }
+    }
+
+    function initCitySelector() {
+        provinceSelectEl = $("provinceSelect");
+        citySelectEl = $("citySelect");
+        if (!provinceSelectEl || !citySelectEl) return;
+        var savedP = parseInt(localStorage.getItem("taiji_province") || "0", 10);
+        var savedC = parseInt(localStorage.getItem("taiji_city") || "0", 10);
+        for (var i = 0; i < PROVINCE_DB.length; i++) {
+            var opt = document.createElement("option");
+            opt.value = i;
+            opt.textContent = PROVINCE_DB[i].name;
+            if (i === savedP) opt.selected = true;
+            provinceSelectEl.appendChild(opt);
+        }
+        populateCityList(savedP);
+        if (savedC < citySelectEl.options.length) citySelectEl.value = savedC;
+        provinceSelectEl.addEventListener("change", function () {
+            var p = parseInt(this.value, 10);
+            localStorage.setItem("taiji_province", p);
+            populateCityList(p);
+            localStorage.setItem("taiji_city", "0");
+            updateLocationTip();
+        });
+        citySelectEl.addEventListener("change", function () {
+            localStorage.setItem("taiji_city", this.value);
+            updateLocationTip();
+        });
+        updateLocationTip();
+    }
+
+    function updateLocationTip() {
+        var tip = $("locationTip");
+        if (!tip) return;
+        var city = getSelectedCity();
+        var now = new Date();
+        var solar = getSolarTime(now);
+        var bh = getHourBranchFromSolar(solar);
+        var BR = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+        var diff = city[1] - BEIJING_LNG;
+        var diffMin = Math.round(diff * 4);
+        var diffDesc = diff === 0 ? "" :
+            (diffMin > 0 ? "快" + diffMin + "分" : "慢" + Math.abs(diffMin) + "分");
+        tip.textContent = BR[bh] + "时" + solar.getHours() + ":" + (solar.getMinutes() < 10 ? "0" : "") + solar.getMinutes() +
+            (diffDesc ? "（比北京" + diffDesc + "）" : "");
+    }
+
+    document.getElementById("taiji").innerHTML = TAIJI_SVG;
+
+    function stableLines(lines) { return lines.map(function (v) { return (v === 6 || v === 8) ? 8 : 7; }); }
+    function mutate(lines) { return lines.map(function (v) { return v === 6 ? 9 : (v === 9 ? 6 : v); }); }
+    function byLines(arr) { return byPattern[arr.join("")] || null; }
+    function esc(s) { return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+    function renderLines(container, lines) {
+        container.innerHTML = "";
+        for (var i = 5; i >= 0; i--) {
+            var v = lines[i];
+            var div = document.createElement("div");
+            div.className = "line" + ((v === 8 || v === 6) ? " yin" : "");
+            if (v === 9) { div.appendChild(mark("○")); }
+            else if (v === 6) { div.appendChild(mark("×")); }
+            container.appendChild(div);
+        }
+        function mark(t) { var s = document.createElement("span"); s.className = "mark"; s.textContent = t; return s; }
+    }
+
+    function lineTexts(ben, changing) {
+        return changing.map(function (i) { return (ben.lt && ben.lt[i]) ? ben.lt[i] : ""; });
+    }
+
+    function setFortune(el, h) {
+        el.textContent = h.f + " " + (FORTUNE_STARS[h.f] || "");
+        el.className = "gua-fortune " + (FORTUNE_CLASS[h.f] || "mid");
+    }
+
+    function showResult(r, question) {
+        var ben = r.ben, bian = r.bian;
+        $("benName").textContent = ben.name + "（" + ben.up + "上" + ben.low + "下）";
+        renderLines($("benLines"), r.lines);
+        setFortune($("benFortune"), ben);
+
+        if (bian) {
+            $("bianName").textContent = bian.name + "（" + bian.up + "上" + bian.low + "下）";
+            renderLines($("bianLines"), mutate(r.lines));
+            setFortune($("bianFortune"), bian);
+        } else {
+            $("bianName").textContent = "无动爻 · 不变卦";
+            $("bianLines").innerHTML = '<div style="color:#b0a090;padding-top:20px">六爻安静，事态将顺其自然发展</div>';
+            $("bianFortune").textContent = "";
+            $("bianFortune").className = "gua-fortune";
+        }
+
+        $("judgment").textContent = ben.j;
+        $("meaning").textContent = ben.m;
+        $("advice").textContent = ben.a;
+
+        var bh = (window.HEXAGRAMS_BAIHUA && HEXAGRAMS_BAIHUA[ben.n]) ? HEXAGRAMS_BAIHUA[ben.n] : null;
+        if (bh && bh.t) {
+            $("judgmentBaihua").textContent = bh.t;
+        } else {
+            $("judgmentBaihua").textContent = "（暂无白话译文）";
+        }
+
+        if (r.logic) {
+            $("logicRow").classList.remove("hidden");
+            $("logic").textContent = r.logic;
+        } else {
+            $("logicRow").classList.add("hidden");
+        }
+
+        if (r.hu) {
+            $("huRow").classList.remove("hidden");
+            $("hu").textContent = r.hu.name + "（" + r.hu.up + "上" + r.hu.low + "下）　" + (r.hu.f || "");
+        } else {
+            $("huRow").classList.add("hidden");
+        }
+
+        if (ben.c) {
+            $("conclusionRow").classList.remove("hidden");
+            $("conclusion").textContent = ben.c;
+        } else {
+            $("conclusionRow").classList.add("hidden");
+        }
+
+        if (r.changing.length) {
+            $("moveRow").classList.remove("hidden");
+            var changingSet = {};
+            r.changing.forEach(function (idx) { changingSet[idx] = true; });
+            var LINE_KIND = { 9: "老阳", 7: "少阳", 8: "少阴", 6: "老阴" };
+            var movingLines = [];
+            var bhLt = (bh && bh.lt_t) ? bh.lt_t : [];
+            for (var i = 0; i < 6; i++) {
+                var v = r.lines[i];
+                var isMoving = changingSet[i];
+                var kind = LINE_KIND[v] || "未知";
+                var label = YAO_NAMES[i] + "爻（" + kind + (isMoving ? "·动）" : "·静）");
+                var text = (ben.lt && ben.lt[i]) ? ben.lt[i] : "";
+                var baihua = bhLt[i] ? bhLt[i] : "";
+                var prefix = isMoving ? "● " : "○ ";
+                var lineStr = prefix + label + "：" + text;
+                if (baihua) {
+                    lineStr += "<br>　　白话：" + baihua;
+                }
+                movingLines.push(lineStr);
+            }
+            $("moving").innerHTML = movingLines.join("<br>");
+        } else {
+            $("moveRow").classList.add("hidden");
+        }
+        if (bian) {
+            $("bianTitle").classList.remove("hidden");
+            $("bianRow").classList.remove("hidden");
+            $("bianJudge").textContent = bian.j;
+            var bhBian = (window.HEXAGRAMS_BAIHUA && HEXAGRAMS_BAIHUA[bian.n]) ? HEXAGRAMS_BAIHUA[bian.n] : null;
+            if (bhBian && bhBian.t) {
+                $("bianBaihuaRow").classList.remove("hidden");
+                $("bianBaihua").textContent = bhBian.t;
+            } else {
+                $("bianBaihuaRow").classList.add("hidden");
+            }
+            $("bianMeaningRow").classList.remove("hidden");
+            $("bianMeaning").textContent = bian.m;
+            if (bian.c) {
+                $("bianConclusionRow").classList.remove("hidden");
+                $("bianConclusion").textContent = "变卦结论：" + bian.c;
+            } else {
+                $("bianConclusionRow").classList.add("hidden");
+            }
+        } else {
+            $("bianTitle").classList.add("hidden");
+            $("bianRow").classList.add("hidden");
+            $("bianBaihuaRow").classList.add("hidden");
+            $("bianMeaningRow").classList.add("hidden");
+            $("bianConclusionRow").classList.add("hidden");
+        }
+
+        var tiyongResult = analyzeTiyong(ben, bian, r.lines, question, getSolarTime(new Date()));
+        $("tiyongTitle").classList.remove("hidden");
+        $("tiyongRow").classList.remove("hidden");
+        $("tiyong").textContent = tiyongResult.lines_text;
+        if (tiyongResult.detail_text) {
+            $("tiyongDetailRow").classList.remove("hidden");
+            $("tiyongDetail").textContent = tiyongResult.detail_text;
+        } else {
+            $("tiyongDetailRow").classList.add("hidden");
+        }
+        if (tiyongResult.outcome_text) {
+            $("tiyongOutcomeRow").classList.remove("hidden");
+            $("tiyongOutcome").textContent = tiyongResult.outcome_text;
+        } else {
+            $("tiyongOutcomeRow").classList.add("hidden");
+        }
+        $("yaobianRow").classList.remove("hidden");
+        $("yaobian").textContent = tiyongResult.yao_text;
+
+        var meta = "所问之事：" + esc(question) + "　｜　起卦方式：" + r.method +
+            "　｜　时间：" + r.timeText;
+        $("meta").textContent = meta;
+
+        resultEl.classList.remove("hidden");
+        resultEl.scrollIntoView({ behavior: "smooth", block: "start" });
+
+        var title = r.timeText + "｜" + ben.name + "｜" + ben.f;
+        historyList.push({ title: title, result: r, question: question });
+        var opt = document.createElement("option");
+        opt.textContent = title;
+        historyBox.insertBefore(opt, historyBox.firstChild);
+        historyBox.selectedIndex = 0;
+    }
+
+    function coinMethod(question, done) {
+        var lines = [], step = 0, faces = [0, 0, 0], kinds = [];
+        var KIND = ["老阴", "少阴", "少阳", "老阳"];
+        function tick() {
+            if (step >= 6) {
+                setTimeout(function () {
+                    done({ lines: lines, logic: coinLogic(kinds) });
+                }, 200);
+                return;
+            }
+            var backs = 0;
+            for (var c = 0; c < 3; c++) {
+                var back = Math.random() < 0.5;
+                faces[c] = back ? 1 : 0;
+                if (back) backs++;
+            }
+            drawCoins(faces);
+            kinds.push(KIND[backs]);
+            lines[step] = backs === 3 ? 9 : (backs === 2 ? 7 : (backs === 1 ? 8 : 6));
+            statusEl.textContent = "掷卦中… 第 " + (step + 1) + " 爻（" + KIND[backs] + "）";
+            step++;
+            setTimeout(tick, 520);
+        }
+        coinsEl.classList.remove("hidden");
+        tick();
+    }
+
+    function coinLogic(kinds) {
+        var map = { "老阳": "老阳(○)动", "少阳": "少阳(—)静", "少阴": "少阴(‑‑)静", "老阴": "老阴(×)动" };
+        var parts = kinds.map(function (k, i) {
+            return "第" + YAO_NAMES[i] + "爻：" + map[k];
+        });
+        return "三枚铜钱，背为阳、字为阴；" + parts.join("，");
+    }
+
+    function coinOfflineInput(question) {
+        var lines = [], kinds = [];
+        for (var i = 1; i <= 6; i++) {
+            var val = parseInt($("c" + i).value, 10);
+            if (val !== 6 && val !== 7 && val !== 8 && val !== 9) val = 7;
+            var kind = { 6: "老阴", 7: "少阳", 8: "少阴", 9: "老阳" }[val];
+            kinds.push(kind);
+            lines.push(val);
+        }
+        statusEl.textContent = "离线输入起卦中……";
+        coinsEl.classList.add("hidden");
+        return { lines: lines, logic: coinLogic(kinds) };
+    }
+
+    function drawCoins(faces) {
+        coinsEl.innerHTML = "";
+        faces.forEach(function (f) {
+            var d = document.createElement("div");
+            d.className = "coin";
+            d.textContent = f ? "背" : "字";
+            coinsEl.appendChild(d);
+        });
+    }
+
+    function meihuaMethod(question, done) {
+        var now = new Date();
+        var solar = getSolarTime(now);
+        var yearBranch = (now.getFullYear() - 4) % 12;
+        var month = now.getMonth() + 1;
+        var day = now.getDate();
+        var hourBranch = getHourBranchFromSolar(solar);
+        var BR = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
+        var cityName = getSelectedCity()[0];
+
+        var up = (yearBranch + 1 + month + day) % 8;
+        var down = (yearBranch + 1 + month + day + hourBranch + 1) % 8;
+        var moving = (yearBranch + 1 + month + day + hourBranch + 1) % 6;
+        if (up === 0) up = 8;
+        if (down === 0) down = 8;
+        if (moving === 0) moving = 6;
+        moving--;
+
+        var trigram = function (n) {
+            var t = [
+                [7, 7, 7], [7, 7, 8], [7, 8, 7], [7, 8, 8],
+                [8, 7, 7], [8, 7, 8], [8, 8, 7], [8, 8, 8]
+            ];
+            return t[n - 1];
+        };
+        var lines = [8, 8, 8, 8, 8, 8];
+        var tUp = trigram(up), tDown = trigram(down);
+        for (var i = 0; i < 3; i++) lines[i] = tDown[i];
+        for (var j = 0; j < 3; j++) lines[3 + j] = tUp[j];
+        lines[moving] = lines[moving] === 7 ? 9 : 6;
+
+        statusEl.textContent = "梅花易数起卦中……";
+        coinsEl.classList.add("hidden");
+        var sumUp = yearBranch + 1 + month + day;
+        var sumDown = yearBranch + 1 + month + day + hourBranch + 1;
+        var solarTimeStr = solar.getHours() + "时" + (solar.getMinutes() < 10 ? "0" : "") + solar.getMinutes() + "分";
+        var logic = "① 起卦地点：" + cityName + "（太阳时" + solarTimeStr + "）" +
+            "　② 时间：" + BR[yearBranch] + "年 " + month + "月 " + day + "日 " + BR[hourBranch] + "时" +
+            "　③ 上卦 = (年+月+日) = " + sumUp + " ÷ 8 余 " + (sumUp % 8 === 0 ? 8 : sumUp % 8) + " → " + trigramName(up) + "卦" +
+            "　④ 下卦 = (年+月+日+时) = " + sumDown + " ÷ 8 余 " + (sumDown % 8 === 0 ? 8 : sumDown % 8) + " → " + trigramName(down) + "卦" +
+            "　⑤ 动爻 = (年+月+日+时) = " + sumDown + " ÷ 6 余 " + (sumDown % 6 === 0 ? 6 : sumDown % 6) + " → 第" + YAO_NAMES[moving] + "爻动";
+        setTimeout(function () {
+            done({
+                lines: lines,
+                changing: [moving],
+                method: "梅花易数·时间起卦（" + cityName + " " + BR[yearBranch] + "年 " + month + "月 " + day + "日 " + BR[hourBranch] + "时）",
+                logic: logic,
+                timeText: fmt(now)
+            });
+        }, 700);
+    }
+
+    function numberMethod(question) {
+        var raw = ($("divineNum").value || "").replace(/\D/g, "");
+        if (raw.length < 1) raw = "1";
+        if (raw.length > 18) raw = raw.substring(0, 18);
+        var digits = raw.split("").map(function (c) { return parseInt(c, 10); });
+        var len = digits.length;
+
+        var sumArr = function (a) { var s = 0; for (var i = 0; i < a.length; i++) s += a[i]; return s; };
+
+        var now = new Date();
+        var solar = getSolarTime(now);
+        var hourBranch = getHourBranchFromSolar(solar);
+        var BR = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
+        var shichen = hourBranch + 1;
+        var cityName = getSelectedCity()[0];
+
+        var upSum, downSum, moveSum, splitDesc;
+        var solarTimeStr = solar.getHours() + "时" + (solar.getMinutes() < 10 ? "0" : "") + solar.getMinutes() + "分";
+        if (len === 1) {
+            upSum = digits[0];
+            downSum = shichen;
+            moveSum = digits[0] + shichen;
+            splitDesc = "① 起卦地点：" + cityName + "（太阳时" + solarTimeStr + "）" +
+                "　② 单数字：" + digits[0] + " 为上卦；当前" + BR[hourBranch] + "时(数" + shichen + ") 为下卦；两数相加求动爻";
+        } else if (len % 2 === 0) {
+            var half = len / 2;
+            upSum = sumArr(digits.slice(0, half));
+            downSum = sumArr(digits.slice(half));
+            moveSum = sumArr(digits);
+            splitDesc = "① 起卦地点：" + cityName + "（太阳时" + solarTimeStr + "）" +
+                "　② 共 " + len + " 位（偶数）：前" + half + "位 " + digits.slice(0, half).join("+") + "=" + upSum + " 为上卦；后" + half + "位 " + digits.slice(half).join("+") + "=" + downSum + " 为下卦；全部相加=" + moveSum + " 求动爻";
+        } else {
+            var front = (len - 1) / 2;
+            var back = (len + 1) / 2;
+            upSum = sumArr(digits.slice(0, front));
+            downSum = sumArr(digits.slice(front));
+            moveSum = sumArr(digits);
+            splitDesc = "① 起卦地点：" + cityName + "（太阳时" + solarTimeStr + "）" +
+                "　② 共 " + len + " 位（奇数，天简地繁）：前" + front + "位 " + digits.slice(0, front).join("+") + "=" + upSum + " 为上卦；后" + back + "位 " + digits.slice(front).join("+") + "=" + downSum + " 为下卦；全部相加=" + moveSum + " 求动爻";
+        }
+
+        var up = upSum % 8; if (up === 0) up = 8;
+        var down = downSum % 8; if (down === 0) down = 8;
+        var moving = moveSum % 6; if (moving === 0) moving = 6;
+        var movingIdx = moving - 1;
+
+        var trigram = function (n) {
+            var t = [
+                [7, 7, 7], [7, 7, 8], [7, 8, 7], [7, 8, 8],
+                [8, 7, 7], [8, 7, 8], [8, 8, 7], [8, 8, 8]
+            ];
+            return t[n - 1];
+        };
+        var tUp = trigram(up), tDown = trigram(down);
+        var lines = [8, 8, 8, 8, 8, 8];
+        for (var i = 0; i < 3; i++) lines[i] = tDown[i];       // 下卦在底
+        for (var j = 0; j < 3; j++) lines[3 + j] = tUp[j];      // 上卦在顶
+        lines[movingIdx] = lines[movingIdx] === 7 ? 9 : 6;
+
+        var huLines = [lines[1], lines[2], lines[3], lines[3], lines[4], lines[5]];
+        var huHex = byLines(stableLines(huLines));
+
+        statusEl.textContent = "数字起卦中……";
+        coinsEl.classList.add("hidden");
+        var logic = splitDesc +
+            "　③ 上卦 = " + upSum + " ÷ 8 余 " + (upSum % 8 === 0 ? 8 : upSum % 8) + " → " + trigramName(up) + "卦" +
+            "　④ 下卦 = " + downSum + " ÷ 8 余 " + (downSum % 8 === 0 ? 8 : downSum % 8) + " → " + trigramName(down) + "卦" +
+            "　⑤ 动爻 = " + moveSum + " ÷ 6 余 " + (moveSum % 6 === 0 ? 6 : moveSum % 6) + " → 第" + YAO_NAMES[movingIdx] + "爻动" +
+            "　⑥ 本卦 = " + trigramName(up) + trigramName(down) + "（" + (huHex ? "互卦 " + huHex.name : "") + "）";
+        return {
+            lines: lines,
+            changing: [movingIdx],
+            method: "数字起卦（" + raw + "）",
+            logic: logic,
+            hu: huHex,
+            timeText: fmt(new Date())
+        };
+    }
+
+    function pokerMakeDeck() {
+        var SUITS = ["\u2660", "\u2665", "\u2666", "\u2663"];
+        var NAMES = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
+        var deck = [];
+        for (var s = 0; s < 4; s++) {
+            for (var n = 0; n < 13; n++) {
+                deck.push({ suit: SUITS[s], name: NAMES[n], num: n + 1, color: (s === 1 || s === 2) ? "red" : "black" });
+            }
+        }
+        for (var i = deck.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = deck[i]; deck[i] = deck[j]; deck[j] = tmp;
+        }
+        return deck;
+    }
+
+    var POKER_TRIGRAM = [[7,7,7],[7,7,8],[7,8,7],[7,8,8],[8,7,7],[8,7,8],[8,8,7],[8,8,8]];
+    var POKER_KIND = { 9:"老阳(○)动", 7:"少阳(—)静", 8:"少阴(\u2011\u2011)静", 6:"老阴(×)动" };
+
+    function pokerComputeGua(cards, count) {
+        var n1 = cards[0].num, n2 = cards.length > 1 ? cards[1].num : 0;
+        var n3 = cards.length > 2 ? cards[2].num : 0;
+        var now = new Date();
+        var solar = getSolarTime(now);
+        var hourBranch = getHourBranchFromSolar(solar);
+        var BR = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+        var hourNum = hourBranch + 1;
+        var cityName = getSelectedCity()[0];
+        var up, down, movingIdx, desc;
+
+        if (count === 1 || count === "1") {
+            up = n1 % 8; if (up === 0) up = 8;
+            down = hourNum % 8; if (down === 0) down = 8;
+            movingIdx = (n1 + hourNum) % 6; if (movingIdx === 0) movingIdx = 6;
+            movingIdx--;
+            var solarTimeStr = solar.getHours() + "时" + (solar.getMinutes() < 10 ? "0" : "") + solar.getMinutes() + "分";
+            desc = "① 起卦地点：" + cityName + "（太阳时" + solarTimeStr + "）" +
+                "　② 抽得牌 " + cards[0].name + cards[0].suit + "(数值" + n1 + ")" +
+                "　③ 当前" + BR[hourBranch] + "时(数" + hourNum + ")" +
+                "　④ 上卦 = " + n1 + " ÷ 8 余 " + (n1 % 8 === 0 ? 8 : n1 % 8) + " → " + trigramName(up) + "卦" +
+                "　⑤ 下卦 = 时辰数" + hourNum + " ÷ 8 余 " + (hourNum % 8 === 0 ? 8 : hourNum % 8) + " → " + trigramName(down) + "卦" +
+                "　⑥ 动爻 = (" + n1 + "+" + hourNum + ") = " + (n1 + hourNum) + " ÷ 6 余 " + ((n1 + hourNum) % 6 === 0 ? 6 : (n1 + hourNum) % 6) + " → 第" + YAO_NAMES[movingIdx] + "爻动";
+        } else if (count === 2 || count === "2") {
+            up = n1 % 8; if (up === 0) up = 8;
+            down = n2 % 8; if (down === 0) down = 8;
+            movingIdx = (n1 + n2) % 6; if (movingIdx === 0) movingIdx = 6;
+            movingIdx--;
+            desc = "① 抽得牌 " + cards[0].name + cards[0].suit + "(数值" + n1 + ")、" + cards[1].name + cards[1].suit + "(数值" + n2 + ")" +
+                "　② 上卦 = " + n1 + " ÷ 8 余 " + (n1 % 8 === 0 ? 8 : n1 % 8) + " → " + trigramName(up) + "卦" +
+                "　③ 下卦 = " + n2 + " ÷ 8 余 " + (n2 % 8 === 0 ? 8 : n2 % 8) + " → " + trigramName(down) + "卦" +
+                "　④ 动爻 = (" + n1 + "+" + n2 + ") = " + (n1 + n2) + " ÷ 6 余 " + ((n1 + n2) % 6 === 0 ? 6 : (n1 + n2) % 6) + " → 第" + YAO_NAMES[movingIdx] + "爻动";
+        } else {
+            up = n1 % 8; if (up === 0) up = 8;
+            down = n2 % 8; if (down === 0) down = 8;
+            var total = n1 + n2 + n3;
+            movingIdx = total % 6; if (movingIdx === 0) movingIdx = 6;
+            movingIdx--;
+            desc = "① 抽得牌 " + cards[0].name + cards[0].suit + "(数值" + n1 + ")、" + cards[1].name + cards[1].suit + "(数值" + n2 + ")、" + cards[2].name + cards[2].suit + "(数值" + n3 + ")" +
+                "　② 上卦 = " + n1 + " ÷ 8 余 " + (n1 % 8 === 0 ? 8 : n1 % 8) + " → " + trigramName(up) + "卦" +
+                "　③ 下卦 = " + n2 + " ÷ 8 余 " + (n2 % 8 === 0 ? 8 : n2 % 8) + " → " + trigramName(down) + "卦" +
+                "　④ 动爻 = (" + n1 + "+" + n2 + "+" + n3 + ") = " + total + " ÷ 6 余 " + (total % 6 === 0 ? 6 : total % 6) + " → 第" + YAO_NAMES[movingIdx] + "爻动";
+        }
+
+        var tUp = POKER_TRIGRAM[up - 1], tDown = POKER_TRIGRAM[down - 1];
+        var lines = [0, 0, 0, 0, 0, 0];
+        for (var i = 0; i < 3; i++) lines[i] = tDown[i];
+        for (var j = 0; j < 3; j++) lines[3 + j] = tUp[j];
+        lines[movingIdx] = lines[movingIdx] === 7 ? 9 : 6;
+
+        var huLines = [lines[1], lines[2], lines[3], lines[3], lines[4], lines[5]];
+        var huHex = byLines(stableLines(huLines));
+
+        return { lines: lines, movingIdx: movingIdx, up: up, down: down, desc: desc, hu: huHex };
+    }
+
+    function pokerShowCards(container, cards) {
+        container.innerHTML = "";
+        cards.forEach(function (c) {
+            var div = document.createElement("div");
+            div.className = "poker-card " + c.color;
+            div.innerHTML = '<div class="value">' + esc(c.name) + '</div><div class="suit">' + c.suit + '</div>';
+            container.appendChild(div);
+        });
+    }
+
+    function pokerMethod(question) {
+        var modeEl = document.querySelector('input[name="pokerMode"]:checked');
+        var mode = modeEl ? modeEl.value : "anim";
+
+        var cards = [];
+
+        if (mode === "input") {
+            var countEl = document.querySelector('input[name="pokerCount"]:checked');
+            var count = countEl ? countEl.value : "2";
+            var inputEl = document.getElementById("pokerInput");
+            var inputVal = inputEl ? inputEl.value.trim() : "";
+            var parts = inputVal.split(/\s+/).filter(function (s) { return s.length > 0; });
+            var valMap = { A:1, J:11, Q:12, K:13 };
+            function cardValue(s) { return valMap[s] || (parseInt(s) || 1); }
+            for (var i = 0; i < parseInt(count, 10); i++) {
+                var v = parts[i] ? cardValue(parts[i]) : 1;
+                var nm = parts[i] || "A";
+                cards.push({ suit: "\u2606", name: nm, num: v, color: "black" });
+            }
+        } else {
+            var deck = pokerMakeDeck();
+            var countInt = Math.floor(Math.random() * 3) + 1;
+            for (var k = 0; k < countInt; k++) {
+                cards.push(deck[k]);
+            }
+            var count = String(countInt);
+        }
+
+        var result = pokerComputeGua(cards, count);
+        pokerShowCards($("pokerCards"), cards);
+
+        statusEl.textContent = "扑克牌起卦中(" + cards.length + "张)...";
+        coinsEl.classList.add("hidden");
+
+        var methodSuffix = mode === "input" ? "离线" : "动画";
+        return {
+            lines: result.lines,
+            changing: [result.movingIdx],
+            method: "梅花易数\u00B7扑克牌起卦(" + cards.length + "张\u00B7" + methodSuffix + ")",
+            logic: result.desc,
+            hu: result.hu,
+            timeText: fmt(new Date())
+        };
+    }
+
+    function fmt(d) {
+        function p(n) { return (n < 10 ? "0" : "") + n; }
+        return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) +
+            " " + p(d.getHours()) + ":" + p(d.getMinutes());
+    }
+
+    function resolve(r) {
+        var ben = byLines(stableLines(r.lines));
+        var bian = r.changing.length ? byLines(stableLines(mutate(r.lines))) : null;
+        return { lines: r.lines, changing: r.changing, ben: ben, bian: bian, method: r.method, timeText: r.timeText, logic: r.logic, hu: r.hu };
+    }
+
+    function changIdx(lines) {
+        var out = [];
+        lines.forEach(function (v, i) { if (v === 6 || v === 9) out.push(i); });
+        return out;
+    }
+
+    window.divine = function () {
+        if (running) return;
+        var question = questionEl.value.trim();
+        if (!question) {
+            statusEl.textContent = "请先输入所问之事，再点击太极图。";
+            questionEl.focus();
+            return;
+        }
+        running = true;
+        statusEl.textContent = "诚心默念所问之事，准备起卦……";
+        var method = document.querySelector('input[name="method"]:checked').value;
+        var finish = function (lines, changing, methodText, logic, hu) {
+            running = false;
+            coinsEl.classList.add("hidden");
+            showResult(resolve({ lines: lines, changing: changing, method: methodText, logic: logic, hu: hu }), question);
+        };
+        if (method === "coin") {
+            var coinMode = document.querySelector('input[name="coinMode"]:checked').value;
+            if (coinMode === "input") {
+                var res = coinOfflineInput(question);
+                setTimeout(function () { finish(res.lines, changIdx(res.lines), "掷铜钱六爻法·离线输入", res.logic, null); }, 400);
+            } else {
+                coinMethod(question, function (res) { finish(res.lines, changIdx(res.lines), "掷铜钱六爻法", res.logic, null); });
+            }
+        } else if (method === "meihua") {
+            var meihuaMode = document.querySelector('input[name="meihuaMode"]:checked').value;
+            if (meihuaMode === "number") {
+                var r = numberMethod(question);
+                setTimeout(function () { finish(r.lines, r.changing, r.method, r.logic, r.hu); }, 400);
+            } else if (meihuaMode === "poker") {
+                var r = pokerMethod(question);
+                setTimeout(function () { finish(r.lines, r.changing, r.method, r.logic, r.hu); }, 400);
+            } else {
+                meihuaMethod(question, function (r) { finish(r.lines, r.changing, r.method, r.logic, null); });
+            }
+        }
+    };
+
+    window.showHistory = function () {
+        var idx = historyBox.selectedIndex;
+        if (idx < 0 || idx >= historyList.length) return;
+        var item = historyList[idx];
+        showResult(item.result, item.question);
+    };
+
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && document.activeElement === questionEl) {
+            window.divine();
+        }
+    });
+
+    var methodRadios = document.querySelectorAll('input[name="method"]');
+    for (var i = 0; i < methodRadios.length; i++) {
+        methodRadios[i].addEventListener("change", updateSubVisibility);
+    }
+    var coinModeRadios = document.querySelectorAll('input[name="coinMode"]');
+    for (var j = 0; j < coinModeRadios.length; j++) {
+        coinModeRadios[j].addEventListener("change", updateSubVisibility);
+    }
+    var meihuaModeRadios = document.querySelectorAll('input[name="meihuaMode"]');
+    for (var k = 0; k < meihuaModeRadios.length; k++) {
+        meihuaModeRadios[k].addEventListener("change", updateSubVisibility);
+    }
+    var pokerModeRadios = document.querySelectorAll('input[name="pokerMode"]');
+    for (var l = 0; l < pokerModeRadios.length; l++) {
+        pokerModeRadios[l].addEventListener("change", updateSubVisibility);
+    }
+    document.getElementById("taiji").addEventListener("click", function () { window.divine(); });
+    initCitySelector();
+    updateSubVisibility();
+
+    function updateSubVisibility() {
+        var method = document.querySelector('input[name="method"]:checked').value;
+        var coinSub = $("coinSub");
+        var meihuaSub = $("meihuaSub");
+        if (method === "coin") {
+            coinSub.classList.remove("hidden");
+            meihuaSub.classList.add("hidden");
+            var coinMode = document.querySelector('input[name="coinMode"]:checked').value;
+            var coinInputWrap = $("coinInputWrap");
+            if (coinMode === "input") {
+                coinInputWrap.classList.remove("hidden");
+            } else {
+                coinInputWrap.classList.add("hidden");
+            }
+        } else {
+            coinSub.classList.add("hidden");
+            meihuaSub.classList.remove("hidden");
+            var meihuaMode = document.querySelector('input[name="meihuaMode"]:checked').value;
+            var meihuaNumWrap = $("meihuaNumWrap");
+            var meihuaPokerWrap = $("meihuaPokerWrap");
+            if (meihuaMode === "number") {
+                meihuaNumWrap.classList.remove("hidden");
+                meihuaPokerWrap.classList.add("hidden");
+            } else if (meihuaMode === "poker") {
+                meihuaNumWrap.classList.add("hidden");
+                meihuaPokerWrap.classList.remove("hidden");
+                var pokerMode = document.querySelector('input[name="pokerMode"]:checked').value;
+                var pokerInputWrap = $("pokerInputWrap");
+                var pokerCountWrap = $("pokerCountWrap");
+                if (pokerMode === "input") {
+                    pokerInputWrap.classList.remove("hidden");
+                    pokerCountWrap.classList.remove("hidden");
+                } else {
+                    pokerInputWrap.classList.add("hidden");
+                    pokerCountWrap.classList.add("hidden");
+                }
+            } else {
+                meihuaNumWrap.classList.add("hidden");
+                meihuaPokerWrap.classList.add("hidden");
+            }
+        }
+    }
+})();
+
+</script>
+</body>
+</html>
