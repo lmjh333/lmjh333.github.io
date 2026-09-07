@@ -658,13 +658,17 @@ footer {
             <div class="row row-baihua"><span class="k">白话</span><span id="judgmentBaihua"></span></div>
             <div class="row"><span class="k">释义</span><span id="meaning"></span></div>
             <div class="row"><span class="k">断语</span><span id="advice"></span></div>
+            <div class="row"><span class="k">爻辞</span><span class="yao-list" id="benYaoList"></span></div>
             <div id="conclusionRow" class="conclusion-row hidden"><span id="conclusion"></span></div>
             <div class="row hidden" id="moveRow"><span class="k">动爻</span><span id="moving"></span></div>
             <div class="section-title hidden" id="bianTitle">— 变卦解读 —</div>
             <div class="row hidden" id="bianRow"><span class="k">变卦卦辞</span><span id="bianJudge"></span></div>
             <div class="row row-baihua hidden" id="bianBaihuaRow"><span class="k">白话</span><span id="bianBaihua"></span></div>
             <div class="row hidden" id="bianMeaningRow"><span class="k">变卦释义</span><span id="bianMeaning"></span></div>
+            <div class="row hidden" id="bianYaoRow"><span class="k">爻辞</span><span class="yao-list" id="bianYaoList"></span></div>
             <div id="bianConclusionRow" class="conclusion-row bian-conclusion hidden"><span id="bianConclusion"></span></div>
+            <div class="section-title hidden" id="devTitle">— 开发者 · 卦/动爻生成明细 —</div>
+            <div class="tri-box hidden" id="devBox"></div>
         </div>
         <div class="meta" id="meta"></div>
         <div class="export-panel" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line);">
@@ -672,6 +676,7 @@ footer {
                 <label><input type="radio" name="tier" value="guest" checked> 佳宾级</label>
                 <label><input type="radio" name="tier" value="vip"> 贵宾级 🔒</label>
                 <label><input type="radio" name="tier" value="expert"> 专家级 🔒</label>
+                <label><input type="radio" name="tier" value="developer"> 开发者级 🔒</label>
             </div>
             <div class="tier-hint">默认佳宾级；贵宾级/专家级需要输入验证码解锁</div>
             <button onclick="exportPDF()" class="btn-export">导出PDF</button>
@@ -1318,6 +1323,18 @@ window.HEXAGRAMS_BAIHUA={
         }
         return out.join("<br>");
     }
+    function devLinesHtml(lines) {
+        var KIND = { 9: "老阳", 7: "少阳", 8: "少阴", 6: "老阴" };
+        var YAO = ["初", "二", "三", "四", "五", "上"];
+        var out = [];
+        for (var i = 0; i < 6; i++) {
+            var v = lines[i];
+            var moving = v === 9 || v === 6;
+            var to = v === 9 ? "阴爻" : (v === 6 ? "阳爻" : "");
+            out.push(esc(YAO[i] + "爻：数值 " + v + "　" + KIND[v] + (moving ? "（动爻 → 变" + to + "）" : "（静爻，不变）")));
+        }
+        return out.join("<br>");
+    }
     function guaDiagramHtml(lines) {
         var L = ['<div class="lines">'];
         for (var i = 5; i >= 0; i--) {
@@ -1330,7 +1347,7 @@ window.HEXAGRAMS_BAIHUA={
         L.push('</div>');
         return L.join('\n');
     }
-    function triGuaBlock(label, role, h) {
+    function triGuaBlock(label, role, h, processLine) {
         var L = [];
         L.push('<div class="tri-gua">');
         L.push('<div class="tri-name">' + label + '　' + esc(h.name) + '（' + h.up + '上' + h.low + '下）　' + esc(h.f || "") + '</div>');
@@ -1339,14 +1356,26 @@ window.HEXAGRAMS_BAIHUA={
         L.push('<div class="tri-row"><span class="k">白话</span><span>' + esc(h.m || "暂无白话") + '</span></div>');
         L.push('<div class="tri-row"><span class="k">断语</span><span>' + esc(h.a) + '</span></div>');
         L.push('<div class="tri-row"><span class="k">爻辞</span><span>' + yaoWords(h).join("<br>") + '</span></div>');
+        if (processLine) L.push('<div class="tri-row"><span class="k">过程释义</span><span>' + esc(processLine) + '</span></div>');
         L.push('</div>');
         return L.join('\n');
     }
-    function triGuaBlocks(r) {
-        var L = [];
-        if (r.hu) L.push(triGuaBlock("互卦", "互卦由本卦中间四爻组成（三、四、五爻为上卦，二、三、四爻为下卦），是「变化过程」之卦：本卦为现在，互卦为演变过程，变卦为将来结果，其间转折、阶段与内在扰动皆为互卦所摄，预示过程走向。", r.hu));
-        if (r.zong) L.push(triGuaBlock("综卦", "综卦是把本卦上下颠倒（反覆而观），代表同一事物的另一面。此卦提醒：换个角度审视，事情的背面或许另有玄机，结果未必如正着看那般。", r.zong));
-        if (r.cuo) L.push(triGuaBlock("错卦", "错卦是把本卦六爻阴阳全部翻转，即性质相反的卦象。此卦作为对立参照，提示事情朝相反方向变化时的可能图景，供反向权衡。", r.cuo));
+function triGuaBlocks(r) {
+        var L = [], shown = {}, benN = r.ben ? r.ben.n : -1;
+        function canShow(h, label) {
+            if (!h || h.n === benN || shown[h.n]) return false;
+            shown[h.n] = label;
+            return true;
+        }
+        if (canShow(r.hu, "互卦")) {
+            L.push(triGuaBlock("互卦", "互卦由本卦中间四爻组成（三、四、五爻为上卦，二、三、四爻为下卦），是「变化过程」之卦：本卦为现在，互卦为演变过程，变卦为将来结果，其间转折、阶段与内在扰动皆为互卦所摄，预示过程走向。", r.hu, "本卦为现在，互卦为演变过程，变卦为将来结果：由本入变，其间所历的阶段、转折与内在扰动皆为互卦所摄。互卦生体，过程中多有助力；互卦克体，过程中必有阻碍，宜顺其所指筹谋。"));
+        }
+        if (canShow(r.zong, "综卦")) {
+            L.push(triGuaBlock("综卦", "综卦是把本卦上下颠倒（反覆而观），代表同一事物的另一面。此卦提醒：换个角度审视，事情的背面或许另有玄机，结果未必如正着看那般。", r.zong));
+        }
+        if (canShow(r.cuo, "错卦")) {
+            L.push(triGuaBlock("错卦", "错卦是把本卦六爻阴阳全部翻转，即性质相反的卦象。此卦作为对立参照，提示事情朝相反方向变化时的可能图景，供反向权衡。", r.cuo));
+        }
         return L.join('\n');
     }
     function expertTriBlock(label, role, h) {
@@ -1402,6 +1431,9 @@ window.HEXAGRAMS_BAIHUA={
         $("judgment").textContent = ben.j;
         $("meaning").textContent = ben.m;
         $("advice").textContent = ben.a;
+        var yaoSet = {};
+        r.changing.forEach(function (idx) { yaoSet[idx] = true; });
+        $("benYaoList").innerHTML = printYaoList(r.lines, ben, yaoSet);
 
         var bh = (window.HEXAGRAMS_BAIHUA && HEXAGRAMS_BAIHUA[ben.n]) ? HEXAGRAMS_BAIHUA[ben.n] : null;
         if (bh && bh.t) {
@@ -1471,6 +1503,8 @@ window.HEXAGRAMS_BAIHUA={
             }
             $("bianMeaningRow").classList.remove("hidden");
             $("bianMeaning").textContent = bian.m;
+            $("bianYaoRow").classList.remove("hidden");
+            $("bianYaoList").innerHTML = printYaoList(mutate(r.lines), bian);
             if (bian.c) {
                 $("bianConclusionRow").classList.remove("hidden");
                 $("bianConclusion").textContent = "变卦结论：" + bian.c;
@@ -1482,6 +1516,7 @@ window.HEXAGRAMS_BAIHUA={
             $("bianRow").classList.add("hidden");
             $("bianBaihuaRow").classList.add("hidden");
             $("bianMeaningRow").classList.add("hidden");
+            $("bianYaoRow").classList.add("hidden");
             $("bianConclusionRow").classList.add("hidden");
         }
 
@@ -1513,6 +1548,13 @@ window.HEXAGRAMS_BAIHUA={
             $("lostBody").classList.add("hidden");
         }
 
+        var devBian = bian ? ("　变卦：" + bian.name) : "　变卦：无动爻（六爻静）";
+        $("devBox").innerHTML =
+            '<div class="row"><span class="k">起卦逻辑</span><span>' + esc(r.logic || "系统默认起卦") + '</span></div>' +
+            '<div class="row"><span class="k">原始数值</span><span>' + (r.lines || []).join(" · ") + '　（6老阴/7少阳/8少阴/9老阳）</span></div>' +
+            '<div class="row"><span class="k">逐爻明细</span><span>' + devLinesHtml(r.lines) + '</span></div>' +
+            '<div class="row"><span class="k">动爻断法</span><span>' + esc("动爻数：" + (r.changing || []).length + "；" + (tiyongResult ? tiyongResult.yao_text : "").split("\n")[0] + devBian) + '</span></div>';
+
         var displayQuestion = addSearchPrefix(question);
         var meta = "所问之事：" + esc(displayQuestion) + "　｜　起卦方式：" + r.method +
             "　｜　时间：" + r.timeText;
@@ -1537,11 +1579,12 @@ window.HEXAGRAMS_BAIHUA={
         if (!window.lastResult) return;
         var r = window.lastResult.r;
         var t = window.lastResult.tiyong || {};
-        var isExpert = tier === "expert";
-        var vipPlus = tier === "vip" || isExpert;
+        var isDeveloper = tier === "developer";
+        var showAll = tier === "expert" || isDeveloper;
+        var vipPlus = tier === "vip" || showAll;
         var hasTri = r.hu || r.zong || r.cuo;
-        $("triTitle").classList.toggle("hidden", !(isExpert && hasTri));
-        $("triBox").classList.toggle("hidden", !(isExpert && hasTri));
+        $("triTitle").classList.toggle("hidden", !(showAll && hasTri));
+        $("triBox").classList.toggle("hidden", !(showAll && hasTri));
         $("tiyongTitle").classList.toggle("hidden", !vipPlus);
         $("tiyongRow").classList.toggle("hidden", !vipPlus);
         $("tiyongDetailRow").classList.toggle("hidden", !(vipPlus && t.detail_text));
@@ -1549,6 +1592,10 @@ window.HEXAGRAMS_BAIHUA={
         var isSearch = isSearchQ(window.lastResult.question);
         $("lostTitle").classList.toggle("hidden", !(vipPlus && isSearch));
         $("lostBody").classList.toggle("hidden", !(vipPlus && isSearch));
+        var hasLogic = !!(r.logic);
+        $("logicRow").classList.toggle("hidden", !(isDeveloper && hasLogic));
+        $("devTitle").classList.toggle("hidden", !isDeveloper);
+        $("devBox").classList.toggle("hidden", !isDeveloper);
     }
 
     function applyTierChange(rb, e) {
@@ -1622,7 +1669,7 @@ window.HEXAGRAMS_BAIHUA={
         }).join("");
     }
     function tierName(tier) {
-        return { guest: "佳宾级", vip: "贵宾级", expert: "专家级" }[tier] || "佳宾级";
+        return { guest: "佳宾级", vip: "贵宾级", expert: "专家级", developer: "开发者级" }[tier] || "佳宾级";
     }
     function printCss() {
         return "*{-webkit-print-color-adjust:exact;print-color-adjust:exact;}" +
@@ -1668,7 +1715,7 @@ window.HEXAGRAMS_BAIHUA={
             if (t.outcome_text) L.push('<div class="row"><span class="k">结局</span>' + esc(t.outcome_text) + '</div>');
         }
         if (t.yao_text) L.push('<div class="row"><span class="k">动爻</span>' + esc(t.yao_text) + '</div>');
-        if (tier === "vip" || tier === "expert") {
+        if (tier === "vip" || tier === "expert" || tier === "developer") {
             L.push('<div class="sec">— 体用分析（贵宾级）—</div>');
             if (t.lines_text) L.push('<div class="row"><span class="k">体用生克</span>' + esc(t.lines_text) + '</div>');
             if (t.detail_text) L.push('<div class="row"><span class="k">详细分析</span>' + esc(t.detail_text) + '</div>');
@@ -1678,15 +1725,28 @@ window.HEXAGRAMS_BAIHUA={
                 });
             }
         }
-        if (tier === "expert") {
+        if (tier === "expert" || tier === "developer") {
             L.push('<div class="sec">— 专家级深入分析 —</div>');
             L.push('<div class="row"><span class="k">问题分类</span>' + (cat || "综合") + '</div>');
+            var shownTri = {}, benN = ben ? ben.n : -1;
+            function triNote(label, txt) {
+                L.push('<div class="row"><span class="k">' + label + '</span>' + txt + '</div>');
+            }
             if (r.hu) {
+                shownTri[r.hu.n] = "互卦";
                 L.push(expertTriBlock("互卦", "本卦中间四爻所成，代表事态发展过程中的内在过渡与中间环节。", r.hu));
                 L.push('<div class="row"><span class="k">过程释义</span>互卦即「变化过程」之卦：本卦为现在，互卦为演变过程，变卦为将来结果。由本入变，其间所历之阶段、转折与内在扰动，皆为互卦所摄。互卦生体者，过程中有助；互卦克体者，过程中必有阻碍，宜顺其所指筹备，则行到结局自见分明。</div>');
             }
-            if (r.zong) L.push(expertTriBlock("综卦", "本卦上下颠倒而成，是同一事物的另一面，提示换个角度审视事情。", r.zong));
-            if (r.cuo) L.push(expertTriBlock("错卦", "本卦六爻阴阳全变所得，性质相反，作为对立方向变化的参照。", r.cuo));
+            if (r.zong) {
+                if (r.zong.n === benN) triNote("综卦", "即本卦，此卦上下反覆不变（纯卦/正卦无综卦）。");
+                else if (shownTri[r.zong.n]) triNote("综卦", "与" + shownTri[r.zong.n] + "相同（已见上），取其同辞即可。");
+                else { shownTri[r.zong.n] = "综卦"; L.push(expertTriBlock("综卦", "本卦上下颠倒而成，是同一事物的另一面，提示换个角度审视事情。", r.zong)); }
+            }
+            if (r.cuo) {
+                if (r.cuo.n === benN) triNote("错卦", "即本卦，阴阳自合无错卦。");
+                else if (shownTri[r.cuo.n]) triNote("错卦", "与" + shownTri[r.cuo.n] + "相同（已见上），取其同辞即可。");
+                else { shownTri[r.cuo.n] = "错卦"; L.push(expertTriBlock("错卦", "本卦六爻阴阳全变所得，性质相反，作为对立方向变化的参照。", r.cuo)); }
+            }
         }
         return '<!DOCTYPE html><html><head><meta charset="utf-8"><title>太极解卦报告</title><style>' + printCss() + '</style></head><body>' + L.join('\n') + '</body></html>';
     }
