@@ -104,6 +104,8 @@ label { font-size: 15px; color: var(--brown); display: block; margin-bottom: 6px
 }
 #provinceSelect { max-width: 100px; }
 #citySelect { max-width: 120px; }
+.cat-select { max-width: 110px; }
+.cat-tip { font-size: 12px; color: var(--brown); }
 .location-tip {
     font-size: 11px;
     color: var(--brown);
@@ -250,6 +252,16 @@ label { font-size: 15px; color: var(--brown); display: block; margin-bottom: 6px
 .line.yin::before, .line.yin::after { content: ""; width: 48px; height: 9px; background: var(--ink); border-radius: 3px; }
 .line .mark { position: absolute; right: -26px; top: -4px; font-size: 17px; color: var(--cinnabar-deep); }
 
+.tri-box { margin-top: 4px; }
+.tri-gua { margin-top: 10px; border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; background: rgba(255, 255, 255, 0.4); }
+.tri-gua:first-child { margin-top: 6px; }
+.tri-name { font-weight: bold; color: var(--cinnabar-deep); letter-spacing: 1px; margin-bottom: 4px; font-size: 15px; }
+.tri-role { color: var(--brown); font-size: 13px; line-height: 1.6; margin-bottom: 4px; }
+.tri-row { padding: 5px 0; border-bottom: 1px dashed var(--line); line-height: 1.7; font-size: 14px; }
+.tri-row:last-child { border-bottom: none; }
+.tri-row .k { display: inline-block; min-width: 56px; color: var(--cinnabar); font-weight: bold; }
+.tri-row .yao-list { color: var(--ink); }
+
 .detail { margin-top: 14px; }
 .row { padding: 7px 0; border-bottom: 1px dashed var(--line); line-height: 1.75; font-size: 15px; }
 .row:last-child { border-bottom: none; }
@@ -346,6 +358,33 @@ label { font-size: 15px; color: var(--brown); display: block; margin-bottom: 6px
     letter-spacing: 2px;
 }
 .history button:hover { background: var(--cinnabar-deep); }
+
+.export-panel { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.btn-export {
+    flex: 1;
+    min-width: 130px;
+    padding: 12px 16px;
+    background: var(--cinnabar);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+    cursor: pointer;
+    letter-spacing: 2px;
+    min-height: 46px;
+    transition: background .15s ease;
+}
+.btn-export:hover { background: var(--cinnabar-deep); }
+.btn-export2 { background: var(--gold); }
+.btn-export2:hover { background: #96740a; }
+.export-tip {
+    width: 100%;
+    font-size: 11px;
+    color: var(--brown);
+    line-height: 1.7;
+    margin-top: 4px;
+}
 
 .intro {
     background: linear-gradient(180deg, #fdf6ea, #fbf3e4);
@@ -504,9 +543,23 @@ footer {
 
 <main>
     <section class="card">
-        <label for="question">所问之事</label>
+        <div class="location-row cat-row">
+            <label>事　类</label>
+            <select id="catSel" class="cat-select">
+                <option value="综合" selected>综合</option>
+                <option value="工作">工作</option>
+                <option value="健康">健康</option>
+                <option value="寻找">寻找</option>
+                <option value="感情">感情</option>
+                <option value="财运">财运</option>
+                <option value="生活">生活</option>
+                <option value="其他">其他</option>
+            </select>
+            <span class="cat-tip">选"寻找"会自动侧重失物方位提示</span>
+        </div>
+        <label for="question">具体事宜</label>
         <input id="question" type="text" maxlength="60"
-               placeholder="请输入心中所问之事，如：近日工作是否顺利？">
+               placeholder="请输入具体事宜，如：近期工作是否顺利、能否升职？">
         <div class="location-row">
             <label>起卦地点</label>
             <select id="provinceSelect"></select>
@@ -590,12 +643,15 @@ footer {
         </div>
         <div class="detail">
             <div class="row" id="logicRow"><span class="k">起卦逻辑</span><span id="logic"></span></div>
-            <div class="row" id="huRow"><span class="k">互卦</span><span id="hu"></span></div>
+            <div class="section-title hidden" id="triTitle">— 三卦相参（互卦·综卦·错卦）—</div>
+            <div class="tri-box hidden" id="triBox"></div>
             <div class="section-title hidden" id="tiyongTitle">— 体用分析 —</div>
             <div class="row hidden" id="tiyongRow"><span class="k">体用生克</span><span id="tiyong"></span></div>
             <div class="row hidden" id="tiyongDetailRow"><span class="k">详细分析</span><span id="tiyongDetail"></span></div>
             <div class="row hidden" id="tiyongOutcomeRow"><span class="k">结局走向</span><span id="tiyongOutcome"></span></div>
             <div class="row hidden" id="yaobianRow"><span class="k">爻变判断</span><span id="yaobian"></span></div>
+            <div class="section-title hidden" id="lostTitle">— 梅花易数 · 寻物/寻人 —</div>
+            <div id="lostBody" class="hidden"></div>
             <div class="section-title">— 本卦解读 —</div>
             <div class="row"><span class="k">卦辞</span><span id="judgment"></span></div>
             <div class="row row-baihua"><span class="k">白话</span><span id="judgmentBaihua"></span></div>
@@ -617,6 +673,8 @@ footer {
                 <label><input type="radio" name="tier" value="expert"> 专家级</label>
             </div>
             <button onclick="exportPDF()" class="btn-export">导出PDF</button>
+            <button onclick="downloadReport()" class="btn-export btn-export2">下载报告文件</button>
+            <div class="export-tip">【导出PDF】=打印预览，在打印对话框选"另存为PDF"；手机上：打印预览→双指放大→分享→"存储到文件"。　【下载报告文件】=直接下载网页报告，打开后点浏览器[打印]即可转成PDF。</div>
         </div>
         <div class="history">
             <label for="history">历史记录</label>
@@ -839,7 +897,7 @@ window.HEXAGRAMS_BAIHUA={
     function addSearchPrefix(text) {
         var t = String(text || "");
         var searchKeywords = /寻|找|丢|失|不见|下落|去向|在哪|方向/;
-        if (searchKeywords.test(t) && !/^寻找 /.test(t)) {
+        if (searchKeywords.test(t) && !/^寻找 /.test(t) && !/^【/.test(t)) {
             return "寻找 " + t;
         }
         return t;
@@ -1234,6 +1292,69 @@ window.HEXAGRAMS_BAIHUA={
     function byLines(arr) { return byPattern[arr.join("")] || null; }
     function esc(s) { return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
+    function reverseLines(arr) { return arr.slice().reverse(); }
+    function flipLines(arr) { return arr.map(function (v) { return v === 7 ? 8 : 7; }); }
+    function yaoLabel(i, v) {
+        return (["初", "二", "三", "四", "五", "上"][i] || "") + ((v === 7 || v === 9) ? "九" : "六");
+    }
+    function yaoWords(h) {
+        var b = h.lines, out = [];
+        for (var i = 0; i < 6; i++) {
+            out.push(esc(yaoLabel(i, b[i])) + "：" + ((h.lt && h.lt[i]) ? esc(h.lt[i]) : "暂无"));
+        }
+        return out;
+    }
+    function printYaoList(lines, h, movingSet) {
+        var out = [];
+        for (var i = 0; i < 6; i++) {
+            var v = lines[i];
+            var txt = (h.lt && h.lt[i]) ? h.lt[i] : "";
+            out.push(esc(yaoLabel(i, v)) + (movingSet && movingSet[i] ? "（动）" : "：") + esc(txt));
+        }
+        return out.join("<br>");
+    }
+    function guaDiagramHtml(lines) {
+        var L = ['<div class="lines">'];
+        for (var i = 5; i >= 0; i--) {
+            var v = lines[i];
+            var cls = "line" + ((v === 6 || v === 8) ? " yin" : "");
+            if (v === 6 || v === 9) cls += " mov";
+            var mark = v === 9 ? '<span class="mark">○</span>' : (v === 6 ? '<span class="mark">×</span>' : "");
+            L.push('<div class="' + cls + '">' + mark + '</div>');
+        }
+        L.push('</div>');
+        return L.join('\n');
+    }
+    function triGuaBlock(label, role, h) {
+        var L = [];
+        L.push('<div class="tri-gua">');
+        L.push('<div class="tri-name">' + label + '　' + esc(h.name) + '（' + h.up + '上' + h.low + '下）　' + esc(h.f || "") + '</div>');
+        L.push('<div class="tri-role">' + esc(role) + '</div>');
+        L.push('<div class="tri-row"><span class="k">卦辞</span><span>' + esc(h.j) + '</span></div>');
+        L.push('<div class="tri-row"><span class="k">白话</span><span>' + esc(h.m || "暂无白话") + '</span></div>');
+        L.push('<div class="tri-row"><span class="k">断语</span><span>' + esc(h.a) + '</span></div>');
+        L.push('<div class="tri-row"><span class="k">爻辞</span><span>' + yaoWords(h).join("<br>") + '</span></div>');
+        L.push('</div>');
+        return L.join('\n');
+    }
+    function triGuaBlocks(r) {
+        var L = [];
+        if (r.hu) L.push(triGuaBlock("互卦", "互卦由本卦中间四爻组成（三、四、五爻为上卦，二、三、四爻为下卦），是「变化过程」之卦：本卦为现在，互卦为演变过程，变卦为将来结果，其间转折、阶段与内在扰动皆为互卦所摄，预示过程走向。", r.hu));
+        if (r.zong) L.push(triGuaBlock("综卦", "综卦是把本卦上下颠倒（反覆而观），代表同一事物的另一面。此卦提醒：换个角度审视，事情的背面或许另有玄机，结果未必如正着看那般。", r.zong));
+        if (r.cuo) L.push(triGuaBlock("错卦", "错卦是把本卦六爻阴阳全部翻转，即性质相反的卦象。此卦作为对立参照，提示事情朝相反方向变化时的可能图景，供反向权衡。", r.cuo));
+        return L.join('\n');
+    }
+    function expertTriBlock(label, role, h) {
+        var L = [];
+        L.push('<div class="gname" style="font-size:15px;">' + label + '　' + h.name + '（' + h.up + '上' + h.low + '下）　' + (h.f || "") + '</div>');
+        L.push('<div class="row"><span class="k">卦辞</span>' + esc(h.j) + '</div>');
+        L.push('<div class="row"><span class="k">白话</span>' + esc(h.m || "暂无白话") + '</div>');
+        L.push('<div class="row"><span class="k">断语</span>' + esc(h.a) + '</div>');
+        L.push('<div class="row"><span class="k">爻辞</span>' + printYaoList(h.lines, h) + '</div>');
+        L.push('<div class="row" style="color:#8a6d5b;"><span class="k">作用</span>' + esc(role) + '</div>');
+        return L.join('\n');
+    }
+
     function renderLines(container, lines) {
         container.innerHTML = "";
         for (var i = 5; i >= 0; i--) {
@@ -1291,11 +1412,13 @@ window.HEXAGRAMS_BAIHUA={
             $("logicRow").classList.add("hidden");
         }
 
-        if (r.hu) {
-            $("huRow").classList.remove("hidden");
-            $("hu").textContent = r.hu.name + "（" + r.hu.up + "上" + r.hu.low + "下）　" + (r.hu.f || "");
+        if (r.hu || r.zong || r.cuo) {
+            $("triTitle").classList.remove("hidden");
+            $("triBox").classList.remove("hidden");
+            $("triBox").innerHTML = triGuaBlocks(r);
         } else {
-            $("huRow").classList.add("hidden");
+            $("triTitle").classList.add("hidden");
+            $("triBox").classList.add("hidden");
         }
 
         if (ben.c) {
@@ -1376,6 +1499,15 @@ window.HEXAGRAMS_BAIHUA={
         $("yaobianRow").classList.remove("hidden");
         $("yaobian").textContent = tiyongResult.yao_text;
 
+        if (isSearchQ(question)) {
+            $("lostTitle").classList.remove("hidden");
+            $("lostBody").classList.remove("hidden");
+            $("lostBody").innerHTML = lostRowsHtml(lostAnalysis(ben, bian, tiyongResult, question));
+        } else {
+            $("lostTitle").classList.add("hidden");
+            $("lostBody").classList.add("hidden");
+        }
+
         var displayQuestion = addSearchPrefix(question);
         var meta = "所问之事：" + esc(displayQuestion) + "　｜　起卦方式：" + r.method +
             "　｜　时间：" + r.timeText;
@@ -1387,7 +1519,8 @@ window.HEXAGRAMS_BAIHUA={
         var title = r.timeText + "｜" + ben.name + "｜" + ben.f;
         historyList.push({ title: title, result: r, question: question });
         // 存储结果数据供PDF导出使用
-        window.lastResult = { ben: ben, bian: bian, r: r, question: question, cat: cat };
+        var catForExport = isSearchQ(question) ? "寻找" : (tiyongResult ? tiyongResult.category : "综合");
+        window.lastResult = { ben: ben, bian: bian, r: r, question: question, cat: catForExport, tiyong: tiyongResult };
         var opt = document.createElement("option");
         opt.textContent = title;
         historyBox.insertBefore(opt, historyBox.firstChild);
@@ -1395,71 +1528,145 @@ window.HEXAGRAMS_BAIHUA={
     }
 
     // 三级PDF导出功能
-    function getTrigramDirection(name) {
-        var dirs = { "乾": "西北", "兑": "西", "离": "南", "震": "东", "巽": "东南", "坎": "北", "艮": "东北", "坤": "西南" };
-        return dirs[name] || "未知";
+    function trigramInfo(t) {
+        var M = {
+            "乾": { dir: "西北", pos: "高处／西北角（柜顶、书架、天花板、金属贵重物件旁）", obj: "金属·圆形·贵重之物", per: "长辈·上司·刚强男子" },
+            "兑": { dir: "西", pos: "近水金属处（水槽、洗漱台、抽屉、乐器饰品旁）", obj: "开口之物·利器·饰物钱钞", per: "少女·口齿伶俐之人" },
+            "离": { dir: "南", pos: "明亮处（灯下、炉灶、电源、阳光所及之处）", obj: "火·文书·红色之物·镜饰", per: "中女·靓丽明理女子" },
+            "震": { dir: "东", pos: "震动或草木处（门口、走道、树下、交通工具旁）", obj: "草木·声响·瓶罐竹木", per: "长子·青年男子·行动中的人" },
+            "巽": { dir: "东南", pos: "通风处（窗台、风口、柜角夹层、竹木制品旁）", obj: "木质·条状·文书信件", per: "长女·温和之妇人" },
+            "坎": { dir: "北", pos: "近水低洼处（水池、下水道、地窖、卫浴间、车厢角落）", obj: "水·液体·黑色之物", per: "中男·多谋善藏之人" },
+            "艮": { dir: "东北", pos: "静止高处（床底、墙角、储物间、不动之物旁、山上）", obj: "石土·静止之物·包裹", per: "少男·守静少动之人" },
+            "坤": { dir: "西南", pos: "低处平地处（地面、箱子、角落、衣柜底部）", obj: "布帛·衣物·陶土之器", per: "老母·宽厚妇人" }
+        };
+        return M[t] || { dir: "方位待细查", pos: "宜在卦位对应之处仔细寻找", obj: "所失之物", per: "所寻之人" };
     }
-    
-    function getTierContent(tier, ben, bian, r, question, cat) {
-        var lines = [];
-        // 佳宾级：核心卦义
-        lines.push("— 本卦 —");
-        lines.push("卦名：" + ben.name + "（" + ben.up + "上" + ben.low + "下）");
-        lines.push("卦辞：" + ben.j);
-        lines.push("白话：" + (ben.m || "暂无白话"));
-        lines.push("断语：" + ben.a);
+    function isSearchQ(q) { return /寻|找|丢|失|不见|下落|去向|遗失|遍寻/.test(String(q || "")); }
+    function lostAnalysis(ben, bian, t, question) {
+        var guaBody = (t && t.bodyName) || ben.low, guaUse = (t && t.useName) || ben.up;
+        var iu = trigramInfo(guaUse), ib = trigramInfo(guaBody);
+        var scope = guaUse === ben.up ? "外卦·多在室外或他处较远地带" : "内卦·多在近处或室内自家范围";
+        var isPerson = /人|丈夫|妻子|家属|孩子|儿子|女儿|老人|朋友|他|她|同事|老板|亲友/.test(String(question || ""));
+        var rows = [];
+        rows.push(["方位", iu.dir]);
+        rows.push(["位置", iu.pos + "（" + scope + "）"]);
+        if (isPerson) {
+            rows.push(["对象", iu.per + "；此刻多应身处「" + iu.dir + "方·" + iu.pos.split("（")[0] + "」之境"]);
+        } else {
+            rows.push(["类象", iu.obj + "，可在「" + iu.pos.split("（")[0] + "」细寻"]);
+        }
+        var bodyWx = WUXING[guaBody] || "", useWx = WUXING[guaUse] || "";
+        var rel = bodyWx && useWx ? wuxingRelation(bodyWx, useWx) : "";
+        var easeMap = { "用生体得助": "容易寻回", "比和": "较易寻回", "体克用": "可以寻回", "体生用泄": "寻回较难", "用克体": "寻回困难" };
+        var adviseMap = {
+            "用生体得助": "用生体，对方／失物与我相合，未走远，就在临近之处，安心按方位细找，很快可得。",
+            "比和": "体用比和，多半还停在原本位置或惯常存放处，勿远走乱找，就近复看一遍，翻翻常用角落即可。",
+            "体克用": "体克用，此物／人未走远，就藏在你曾忽略的原处附近，耐心翻检常坐常放之地，可得。",
+            "体生用泄": "体生用，已被动过或正处流转之中，或被人顺手带走，宜沿去向与相关之人打听，稍费时日。",
+            "用克体": "用克体，缘浅失散，或被深藏、或已离原处，寻回不易，宜放宽心态，顺其自然。"
+        };
+        rows.push(["难易", easeMap[rel] || "视卦而定"]);
+        rows.push(["建议", adviseMap[rel] || "先按用卦「" + iu.dir + "」方位实地细找，再参动爻所示方向"]);
         if (bian) {
-            lines.push("— 变卦 —");
-            lines.push("变卦：" + bian.name + "（" + bian.up + "上" + bian.low + "下）");
-            lines.push("结局：" + bian.j);
+            var biu = trigramInfo(bian.up);
+            rows.push(["变卦参看", "变卦" + bian.name + "，双卦示去向偏向「" + biu.dir + "方」，环境类象：" + biu.pos.split("（")[0]]);
         }
-        // 动爻
-        var moving = r.numMoving;
-        if (moving === 1) {
-            lines.push("动爻：" + (movingIdx ? YAO_NAMES[movingIdx[0]] : "未知") + "爻");
-        } else if (moving > 1) {
-            lines.push("动爻：" + moving + "爻动");
+        return rows;
+    }
+    function lostRowsHtml(rows) {
+        return rows.map(function (p) {
+            return '<div class="row"><span class="k">' + p[0] + '</span><span>' + esc(p[1]) + '</span></div>';
+        }).join("");
+    }
+    function tierName(tier) {
+        return { guest: "佳宾级", vip: "贵宾级", expert: "专家级" }[tier] || "佳宾级";
+    }
+    function printCss() {
+        return "*{-webkit-print-color-adjust:exact;print-color-adjust:exact;}" +
+            "body{font-family:'KaiTi','STKaiti','Microsoft YaHei',serif;margin:0;padding:18px;color:#2b2118;}" +
+            ".ph{text-align:center;font-size:20px;font-weight:bold;color:#a6192e;letter-spacing:3px;padding-bottom:8px;border-bottom:2px solid #e0c9a6;}" +
+            ".pm{font-size:13px;color:#8a6d5b;margin-top:6px;line-height:1.7;}" +
+            ".sec{text-align:center;color:#b03a2e;font-weight:bold;letter-spacing:3px;margin:16px 0 8px;font-size:15px;}" +
+            ".gname{font-size:18px;font-weight:bold;margin:6px 0;}" +
+            ".row{padding:7px 0;border-bottom:1px dashed #e0c9a6;line-height:1.8;font-size:14px;}" +
+            ".row .k{display:inline-block;min-width:78px;color:#b03a2e;font-weight:bold;}" +
+            ".lines{display:flex;flex-direction:column;align-items:center;gap:4px;margin:10px 0;}" +
+            ".line{width:120px;height:9px;background:#2b2118;border-radius:3px;position:relative;}" +
+            ".line.yin{background:transparent;display:flex;justify-content:space-between;}" +
+            ".line.yin::before,.line.yin::after{content:'';width:46px;height:9px;background:#2b2118;border-radius:3px;}" +
+            ".line.mov{background:#d62828!important;}" +
+            ".line.mov::before,.line.mov::after{background:#d62828!important;}" +
+            ".line .mark{position:absolute;right:-26px;top:-5px;font-size:13px;color:#d62828;font-weight:bold;}";
+    }
+    function buildPrintHtml(tier, data) {
+        var ben = data.ben, bian = data.bian, r = data.r, question = data.question, cat = data.cat, t = data.tiyong || {};
+        var changingSet = {};
+        r.changing.forEach(function (i) { changingSet[i] = true; });
+        var L = [];
+        L.push('<div class="ph">☯ 太极解卦 · 解卦报告</div>');
+        L.push('<div class="pm">层　级：' + tierName(tier) + '</div>');
+        L.push('<div class="pm">所问之事：' + esc(addSearchPrefix(question)) + '</div>');
+        L.push('<div class="pm">起卦方式：' + (r.method || "") + '　｜　时间：' + (r.timeText || "") + '</div>');
+        L.push('<div class="sec">— 本卦 —</div>');
+        L.push('<div class="gname">' + ben.name + '（' + ben.up + '上' + ben.low + '下）　' + (ben.f || "") + '</div>');
+        L.push(guaDiagramHtml(r.lines));
+        L.push('<div class="row"><span class="k">卦辞</span>' + esc(ben.j) + '</div>');
+        L.push('<div class="row"><span class="k">白话</span>' + esc(ben.m || "暂无白话") + '</div>');
+        L.push('<div class="row"><span class="k">断语</span>' + esc(ben.a) + '</div>');
+        L.push('<div class="row"><span class="k">爻辞</span>' + printYaoList(r.lines, ben, changingSet) + '</div>');
+        if (bian) {
+            L.push('<div class="sec">— 变卦 —</div>');
+            L.push('<div class="gname">' + bian.name + '（' + bian.up + '上' + bian.low + '下）　' + (bian.f || "") + '</div>');
+            L.push(guaDiagramHtml(mutate(r.lines)));
+            L.push('<div class="row"><span class="k">卦辞</span>' + esc(bian.j) + '</div>');
+            L.push('<div class="row"><span class="k">白话</span>' + esc(bian.m || "暂无白话") + '</div>');
+            L.push('<div class="row"><span class="k">断语</span>' + esc(bian.a) + '</div>');
+            L.push('<div class="row"><span class="k">爻辞</span>' + printYaoList(mutate(r.lines), bian) + '</div>');
+            if (t.outcome_text) L.push('<div class="row"><span class="k">结局</span>' + esc(t.outcome_text) + '</div>');
         }
-        // 体用分析
-        lines.push("— 体用分析 —");
-        if (r.logic) lines.push(r.logic);
-        // 贵宾级额外：生克与方位
-        if (tier === "vip") {
-            lines.push("体用关系：" + (cat || "综合"));
-            // 寻物方位（如果涉及丢失/寻找）
-            if (/丢|失|寻找/.test(question)) {
-                var dir = getTrigramDirection(ben.name);
-                if (dir) lines.push("失物方位：" + dir);
+        if (t.yao_text) L.push('<div class="row"><span class="k">动爻</span>' + esc(t.yao_text) + '</div>');
+        if (tier === "vip" || tier === "expert") {
+            L.push('<div class="sec">— 体用分析（贵宾级）—</div>');
+            if (t.lines_text) L.push('<div class="row"><span class="k">体用生克</span>' + esc(t.lines_text) + '</div>');
+            if (t.detail_text) L.push('<div class="row"><span class="k">详细分析</span>' + esc(t.detail_text) + '</div>');
+            if (isSearchQ(question)) {
+                lostAnalysis(ben, bian, t, question).forEach(function (p) {
+                    L.push('<div class="row"><span class="k">' + p[0] + '</span>' + esc(p[1]) + '</div>');
+                });
             }
         }
-        // 专家级额外：互卦、综卦、错卦
         if (tier === "expert") {
-            if (r.hu) lines.push("互卦：" + r.hu.name + "（" + r.hu.up + "上" + r.hu.low + "下）");
-            lines.push("综卦：" + (cat || "综合"));
-            lines.push("错卦：以变卦结局为准，主见好就收。");
+            L.push('<div class="sec">— 专家级深入分析 —</div>');
+            L.push('<div class="row"><span class="k">问题分类</span>' + (cat || "综合") + '</div>');
+            if (r.hu) {
+                L.push(expertTriBlock("互卦", "本卦中间四爻所成，代表事态发展过程中的内在过渡与中间环节。", r.hu));
+                L.push('<div class="row"><span class="k">过程释义</span>互卦即「变化过程」之卦：本卦为现在，互卦为演变过程，变卦为将来结果。由本入变，其间所历之阶段、转折与内在扰动，皆为互卦所摄。互卦生体者，过程中有助；互卦克体者，过程中必有阻碍，宜顺其所指筹备，则行到结局自见分明。</div>');
+            }
+            if (r.zong) L.push(expertTriBlock("综卦", "本卦上下颠倒而成，是同一事物的另一面，提示换个角度审视事情。", r.zong));
+            if (r.cuo) L.push(expertTriBlock("错卦", "本卦六爻阴阳全变所得，性质相反，作为对立方向变化的参照。", r.cuo));
         }
-        return lines.join("\n");
+        return '<!DOCTYPE html><html><head><meta charset="utf-8"><title>太极解卦报告</title><style>' + printCss() + '</style></head><body>' + L.join('\n') + '</body></html>';
     }
-    
     function exportPDF() {
         var tier = document.querySelector('input[name="tier"]:checked').value;
         var data = window.lastResult;
         if (!data) { alert("请先进行一次卜签"); return; }
-        var content = getTierContent(tier, data.ben, data.bian, data.r, data.question, data.cat);
-        // 打印窗口
-        var printWindow = window.open("", "_blank");
-        printWindow.document.write("<html><head>" +
-            "<style>" +
-            "@media print { " +
-            "  body { font-family: 'Microsoft Yahei', sans-serif; margin: 1rem; } " +
-            "  .gua { margin: 10px 0; padding: 8px; border: 1px solid #e0c9a6; } " +
-            "  .conclusion-row { margin: 8px 0; padding: 6px 10px; border-left: 4px solid var(--cinnabar); background: #fff8e1; } " +
-            "  .history, .meta, .export-panel { display: none; } " +
-            "} " +
-            "</style>" +
-            "</head><body>" + content + "</body></html>");
-        printWindow.document.close();
-        printWindow.print();
+        var html = buildPrintHtml(tier, data);
+        var iframe = document.createElement("iframe");
+        iframe.style.position = "fixed";
+        iframe.style.right = "0";
+        iframe.style.bottom = "0";
+        iframe.style.width = "0";
+        iframe.style.height = "0";
+        iframe.style.border = "0";
+        document.body.appendChild(iframe);
+        var doc = iframe.contentWindow.document;
+        doc.open();
+        doc.write(html);
+        doc.close();
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+        setTimeout(function () { document.body.removeChild(iframe); }, 3000);
     }
 
     function coinMethod(question, done) {
@@ -1791,7 +1998,11 @@ window.HEXAGRAMS_BAIHUA={
     function resolve(r) {
         var ben = byLines(stableLines(r.lines));
         var bian = r.changing.length ? byLines(stableLines(mutate(r.lines))) : null;
-        return { lines: r.lines, changing: r.changing, ben: ben, bian: bian, method: r.method, timeText: r.timeText, logic: r.logic, hu: r.hu };
+        var b = ben.lines;
+        var hu = r.hu || byLines([b[1], b[2], b[3], b[3], b[4], b[5]]);
+        var zong = byLines(reverseLines(b));
+        var cuo = byLines(flipLines(b));
+        return { lines: r.lines, changing: r.changing, ben: ben, bian: bian, method: r.method, timeText: r.timeText, logic: r.logic, hu: hu, zong: zong, cuo: cuo };
     }
 
     function changIdx(lines) {
@@ -1807,6 +2018,11 @@ window.HEXAGRAMS_BAIHUA={
             statusEl.textContent = "请先输入所问之事，再点击太极图。";
             questionEl.focus();
             return;
+        }
+        var catSel = document.getElementById("catSel");
+        var cat = (catSel && catSel.value) || "";
+        if (cat && cat !== "综合" && cat !== "其他") {
+            question = "【" + cat + "】" + question;
         }
         running = true;
         statusEl.textContent = "诚心默念所问之事，准备起卦……";
@@ -1843,6 +2059,22 @@ window.HEXAGRAMS_BAIHUA={
         if (idx < 0 || idx >= historyList.length) return;
         var item = historyList[idx];
         showResult(item.result, item.question);
+    };
+
+    window.exportPDF = function () { return exportPDF(); };
+    window.downloadReport = function () {
+        var tier = document.querySelector('input[name="tier"]:checked').value;
+        var data = window.lastResult;
+        if (!data) { alert("请先进行一次卜签"); return; }
+        var html = buildPrintHtml(tier, data);
+        var blob = new Blob([html], { type: "text/html;charset=utf-8" });
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "tai-ji-bao-gao-" + tier + ".html";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000);
     };
 
     document.addEventListener("keydown", function (e) {
