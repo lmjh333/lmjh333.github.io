@@ -530,6 +530,46 @@ footer {
     .meihua-num-wrap input { width: 84px; height: 40px; font-size: 16px; }
 }
 
+/* 解读级别卡片（与八字排盘一致的模式） */
+.tier-card {
+    background: var(--paper2, #fdf6ea);
+    border: 1px solid var(--line, #e0c9a6);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+}
+.tier-card .card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--cinnabar-deep, #a6192e);
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--line, #e0c9a6);
+}
+.tier-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+.tier-row .ti {
+    font-size: 13px;
+    color: var(--ink, #2b2118);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+.tier-row .ti input {
+    margin: 0;
+    accent-color: var(--cinnabar, #b03a2e);
+}
+.tier-hint {
+    font-size: 11px;
+    color: var(--brown, #8a6d5b);
+    margin-top: 6px;
+}
+
 </style>
 </head>
 <body>
@@ -537,6 +577,10 @@ footer {
     <div class="title">☯ 太极解卦</div>
     <div class="subtitle">八卦解卦 · 预断吉凶</div>
 </header>
+<nav style="display:flex;justify-content:center;gap:10px;padding:8px 12px 2px;flex-wrap:wrap">
+<a href="index.html" style="text-decoration:none;font-size:13px;border-radius:16px;padding:5px 14px;background:var(--cinnabar,#b03a2e);color:#fff;border:1px solid var(--cinnabar-deep,#a6192e)">☯ 太极解卦</a>
+<a href="bazi.html" style="text-decoration:none;font-size:13px;border-radius:16px;padding:5px 14px;background:rgba(255,255,255,.55);color:var(--ink,#2b2118);border:1px solid var(--line,#e0c9a6)">🧮 八字排盘</a>
+</nav>
 
 <section class="card intro">
     <p>本工具以《周易》六十四卦为根基，融合<strong>梅花易数</strong>、时间起卦、数字起卦、扑克牌起卦等多种方式；输入心中所问之事，即可快速得到本卦、变卦、互卦、体用分析与吉凶参考。页面纯前端运行，<strong>离线可用、不联网、不收集任何信息</strong>。</p>
@@ -628,6 +672,16 @@ footer {
     </section>
 
     <section id="result" class="card hidden">
+        <div class="tier-card">
+            <div class="card-title">解读级别</div>
+            <div class="tier-row">
+                <label class="ti"><input type="radio" name="tier" value="guest" checked> 佳宾</label>
+                <label class="ti"><input type="radio" name="tier" value="vip"> 贵宾</label>
+                <label class="ti"><input type="radio" name="tier" value="expert"> 专家</label>
+                <label class="ti"><input type="radio" name="tier" value="developer"> 开发者</label>
+            </div>
+            <div class="tier-hint">默认佳宾级；贵宾 / 专家 / 开发者需输入验证码解锁，每次进入需重新输入</div>
+        </div>
         <div class="guas">
             <div class="gua">
                 <div class="gua-title">— 本卦 —</div>
@@ -672,13 +726,6 @@ footer {
         </div>
         <div class="meta" id="meta"></div>
         <div class="export-panel" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line);">
-            <div class="tier-selector" style="margin-bottom: 8px;">
-                <label><input type="radio" name="tier" value="guest" checked> 佳宾级</label>
-                <label><input type="radio" name="tier" value="vip"> 贵宾级 🔒</label>
-                <label><input type="radio" name="tier" value="expert"> 专家级 🔒</label>
-                <label><input type="radio" name="tier" value="developer"> 开发者级 🔒</label>
-            </div>
-            <div class="tier-hint">默认佳宾级；贵宾级/专家级需要输入验证码解锁</div>
             <button onclick="exportPDF()" class="btn-export">导出PDF</button>
             <button onclick="downloadReport()" class="btn-export btn-export2">下载报告文件</button>
             <div class="export-tip">【导出PDF】=打印预览，在打印对话框选"另存为PDF"；手机上：打印预览→双指放大→分享→"存储到文件"。　【下载报告文件】=直接下载网页报告，打开后点浏览器[打印]即可转成PDF。</div>
@@ -1173,7 +1220,6 @@ window.HEXAGRAMS_BAIHUA={
     var running = false;
     var TIER_CODE = "lmjh515";
     var currentTier = "guest";
-    var tierUnlocked = false;
 
     var PROVINCE_DB = [
         { name: "北京", cities: [["东城区", 116.4], ["西城区", 116.4], ["朝阳区", 116.5], ["丰台区", 116.3], ["石景山区", 116.2], ["海淀区", 116.3], ["门头沟区", 116.1], ["房山区", 116.0], ["通州区", 116.7], ["顺义区", 116.7], ["昌平区", 116.2], ["大兴区", 116.3], ["怀柔区", 116.6], ["平谷区", 117.1], ["密云区", 117.3], ["延庆区", 116.0]] },
@@ -1600,20 +1646,19 @@ function triGuaBlocks(r) {
 
     function applyTierChange(rb, e) {
         var val = rb.value;
-        if (val !== "guest" && !tierUnlocked) {
-            e.preventDefault();
-            var code = window.prompt("贵宾级/专家级需验证码，请输入验证码：");
-            if (code && code.trim() === TIER_CODE) {
-                tierUnlocked = true;
-                rb.checked = true;
-                currentTier = val;
-                applyTierView(currentTier);
-            } else {
-                statusEl.textContent = "验证码错误或已取消，显示仍为佳宾级。";
-            }
-        } else {
+        if (val === "guest") {
             currentTier = val;
             applyTierView(currentTier);
+            return;
+        }
+        e.preventDefault();
+        var code = window.prompt("请输入" + tierName(val) + "验证码：");
+        if (code && code.trim() === TIER_CODE) {
+            rb.checked = true;
+            currentTier = val;
+            applyTierView(currentTier);
+        } else {
+            statusEl.textContent = "验证码错误或已取消，显示仍为" + tierName(currentTier) + "级。";
         }
     }
 
