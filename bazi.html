@@ -10284,7 +10284,7 @@ initUI();;(function(root,factory){
                 yun: yun,
                 lunar: yun.getLunar()
               },
-              getStartYear: function(){return this._p.startYear;},
+              getStartYear: function(){return this._p.lunar.getSolar().getYear() + this._p.startYear;},
               getEndYear: function(){return this._p.endYear;},
               getStartAge: function(){return this._p.startAge;},
               getEndAge: function(){return this._p.endAge;},
@@ -10346,8 +10346,8 @@ initUI();;(function(root,factory){
               lunar: lunar
             },
             getGender: function(){return this._p.gender;},
-            getStartYear: function(){return this._p.startYear;},
-            getStartAge: function(){return this._p.startYear - this._p.lunar.getSolar().getYear() + 1;},
+            getStartYear: function(){return this._p.lunar.getSolar().getYear() + this._p.startYear;},
+            getStartAge: function(){return this._p.startYear + 1;},
             getStartMonth: function(){return this._p.startMonth;},
             getStartDay: function(){return this._p.startDay;},
             getStartHour: function(){return this._p.startHour;},
