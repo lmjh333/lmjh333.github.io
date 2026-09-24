@@ -1141,7 +1141,7 @@ window.HEXAGRAMS_BAIHUA={
                 }
             }
             if (window.HEXAGRAMS) {
-                var huLines = [lines[1], lines[2], lines[3], lines[3], lines[4], lines[5]];
+                var huLines = [lines[1], lines[2], lines[3], lines[2], lines[3], lines[4]];
                 var huStable = stableLines(huLines);
                 var hu = byLines(huStable);
                 if (hu) {
@@ -2158,7 +2158,7 @@ function triGuaBlocks(r) {
         for (var j = 0; j < 3; j++) lines[3 + j] = tUp[j];      // 上卦在顶
         lines[movingIdx] = lines[movingIdx] === 7 ? 9 : 6;
 
-        var huLines = [lines[1], lines[2], lines[3], lines[3], lines[4], lines[5]];
+        var huLines = [lines[1], lines[2], lines[3], lines[2], lines[3], lines[4]];
         var huHex = byLines(stableLines(huLines));
 
         statusEl.textContent = "数字起卦中……";
@@ -2247,7 +2247,7 @@ function triGuaBlocks(r) {
         for (var j = 0; j < 3; j++) lines[3 + j] = tUp[j];
         lines[movingIdx] = lines[movingIdx] === 7 ? 9 : 6;
 
-        var huLines = [lines[1], lines[2], lines[3], lines[3], lines[4], lines[5]];
+        var huLines = [lines[1], lines[2], lines[3], lines[2], lines[3], lines[4]];
         var huHex = byLines(stableLines(huLines));
 
         return { lines: lines, movingIdx: movingIdx, up: up, down: down, desc: desc, hu: huHex };
